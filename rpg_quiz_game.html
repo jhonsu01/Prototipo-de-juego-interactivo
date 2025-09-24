@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aventurero del Saber</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            overflow: hidden;
+        }
+        
+        .game-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .game-world {
+            width: 100%;
+            height: 70%;
+            background: linear-gradient(to bottom, #87CEEB 0%, #98FB98 40%, #228B22 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .clouds {
+            position: absolute;
+            top: 10%;
+            width: 100%;
+            height: 30%;
+        }
+        
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 50px;
+            opacity: 0.8;
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        .cloud::before, .cloud::after {
+            content: '';
+            position: absolute;
+            background: white;
+            border-radius: 50px;
+        }
+        
+        .cloud1 {
+            width: 80px;
+            height: 40px;
+            top: 20px;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .cloud1::before {
+            width: 50px;
+            height: 50px;
+            top: -25px;
+            left: 10px;
+        }
+        
+        .cloud1::after {
+            width: 60px;
+            height: 40px;
+            top: -15px;
+            right: 10px;
+        }
+        
+        .cloud2 {
+            width: 100px;
+            height: 50px;
+            top: 50px;
+            left: 60%;
+            animation-delay: -4s;
+        }
+        
+        .cloud2::before {
+            width: 60px;
+            height: 60px;
+            top: -30px;
+            left: 15px;
+        }
+        
+        .cloud2::after {
+            width: 70px;
+            height: 50px;
+            top: -20px;
+            right: 15px;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        .ground {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 20%;
+            background: #8B4513;
+            border-top: 5px solid #654321;
+        }
+        
+        .path {
+            position: absolute;
+            bottom: 20%;
+            left: 0;
+            width: 100%;
+            height: 40px;
+            background: repeating-linear-gradient(
+                90deg,
+                #D2691E 0px,
+                #D2691E 20px,
+                #CD853F 20px,
+                #CD853F 40px
+            );
+            border: 3px solid #8B4513;
+        }
+        
+        .character {
+            position: absolute;
+            bottom: 25%;
+            left: 50px;
+            width: 40px;
+            height: 60px;
+            transition: left 2s ease;
+            z-index: 10;
+        }
+        
+        .character-sprite {
+            width: 100%;
+            height: 100%;
+            background: #FFD700;
+            border-radius: 20px 20px 10px 10px;
+            position: relative;
+            animation: bob 1.5s ease-in-out infinite;
+        }
+        
+        .character-sprite::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 25px;
+            height: 25px;
+            background: #FFDBAC;
+            border-radius: 50%;
+            border: 2px solid #DEB887;
+        }
+        
+        .character-sprite::after {
+            content: '⚔️';
+            position: absolute;
+            top: 30px;
+            right: -15px;
+            font-size: 20px;
+            transform: rotate(45deg);
+        }
+        
+        .eyes {
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 15px;
+            height: 6px;
+        }
+        
+        .eyes::before, .eyes::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: black;
+            border-radius: 50%;
+        }
+        
+        .eyes::before {
+            left: 2px;
+        }
+        
+        .eyes::after {
+            right: 2px;
+        }
+        
+        @keyframes bob {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        
+        .monsters {
+            position: absolute;
+            bottom: 25%;
+            right: 100px;
+            display: flex;
+            gap: 30px;
+        }
+        
+        .monster {
+            width: 35px;
+            height: 35px;
+            background: #8B0000;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            position: relative;
+            animation: wiggle 2s ease-in-out infinite;
+        }
+        
+        .monster::before {
+            content: '👹';
+            position: absolute;
+            top: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 25px;
+        }
+        
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(-3deg); }
+            50% { transform: rotate(3deg); }
+        }
+        
+        .ui-panel {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 30%;
+            background: linear-gradient(to bottom, #2c3e50, #34495e);
+            border-top: 3px solid #ecf0f1;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .stat {
+            background: rgba(52, 73, 94, 0.8);
+            padding: 8px 15px;
+            border-radius: 15px;
+            border: 2px solid #3498db;
+            font-weight: bold;
+        }
+        
+        .hp-bar, .exp-bar {
+            width: 200px;
+            height: 20px;
+            background: #34495e;
+            border: 2px solid #ecf0f1;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .hp-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #e74c3c, #c0392b);
+            width: 100%;
+            transition: width 0.5s ease;
+        }
+        
+        .exp-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f39c12, #e67e22);
+            width: 0%;
+            transition: width 0.8s ease;
+        }
+        
+        .question-area {
+            background: rgba(44, 62, 80, 0.9);
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #3498db;
+            min-height: 120px;
+        }
+        
+        .question {
+            font-size: 16px;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        
+        .option {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        
+        .option:hover {
+            background: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .option.correct {
+            background: #27ae60;
+            animation: pulse 0.6s ease;
+        }
+        
+        .option.incorrect {
+            background: #e74c3c;
+            animation: shake 0.6s ease;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        .start-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .title {
+            font-size: 48px;
+            color: #f39c12;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+            margin-bottom: 20px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { text-shadow: 0 0 20px #f39c12; }
+            to { text-shadow: 0 0 30px #f39c12, 0 0 40px #f39c12; }
+        }
+        
+        .subtitle {
+            font-size: 18px;
+            margin-bottom: 30px;
+            text-align: center;
+            color: #bdc3c7;
+        }
+        
+        .start-btn {
+            background: linear-gradient(45deg, #e74c3c, #c0392b);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: bounce 2s infinite;
+        }
+        
+        .start-btn:hover {
+            transform: scale(1.1);
+            background: linear-gradient(45deg, #c0392b, #a93226);
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+        
+        .victory-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+        
+        .victory-title {
+            font-size: 60px;
+            color: white;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+            margin-bottom: 20px;
+            animation: victory-glow 1.5s ease-in-out infinite alternate;
+        }
+        
+        @keyframes victory-glow {
+            from { transform: scale(1); }
+            to { transform: scale(1.1); }
+        }
+        
+        @media (max-width: 768px) {
+            .title { font-size: 36px; }
+            .victory-title { font-size: 48px; }
+            .options { grid-template-columns: 1fr; }
+            .stats { flex-wrap: wrap; gap: 10px; }
+            .hp-bar, .exp-bar { width: 150px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div class="start-screen" id="startScreen">
+            <h1 class="title">🏰 AVENTURERO DEL SABER 🗡️</h1>
+            <p class="subtitle">
+                Embárcate en una épica aventura donde tu conocimiento<br>
+                es tu arma más poderosa. ¡Responde correctamente<br>
+                para avanzar y derrotar a los monstruos!
+            </p>
+            <button class="start-btn" onclick="startGame()">⚔️ INICIAR AVENTURA</button>
+        </div>
+        
+        <div class="victory-screen" id="victoryScreen">
+            <h1 class="victory-title">🎉 ¡VICTORIA! 🎉</h1>
+            <p class="subtitle">
+                ¡Has completado tu aventura y derrotado a todos los monstruos!<br>
+                Tu sabiduría te ha llevado a la gloria.
+            </p>
+            <button class="start-btn" onclick="restartGame()">🔄 NUEVA AVENTURA</button>
+        </div>
+        
+        <div class="game-world">
+            <div class="clouds">
+                <div class="cloud cloud1"></div>
+                <div class="cloud cloud2"></div>
+            </div>
+            
+            <div class="path"></div>
+            
+            <div class="character" id="character">
+                <div class="character-sprite">
+                    <div class="eyes"></div>
+                </div>
+            </div>
+            
+            <div class="monsters" id="monsters">
+                <div class="monster"></div>
+                <div class="monster"></div>
+                <div class="monster"></div>
+                <div class="monster"></div>
+                <div class="monster"></div>
+            </div>
+            
+            <div class="ground"></div>
+        </div>
+        
+        <div class="ui-panel">
+            <div class="stats">
+                <div class="stat">Nivel: <span id="level">1</span></div>
+                <div class="stat">
+                    HP: <div class="hp-bar"><div class="hp-fill" id="hpFill"></div></div>
+                </div>
+                <div class="stat">
+                    EXP: <div class="exp-bar"><div class="exp-fill" id="expFill"></div></div>
+                </div>
+                <div class="stat">Puntos: <span id="score">0</span></div>
+            </div>
+            
+            <div class="question-area">
+                <div class="question" id="question">¡Presiona "Iniciar Aventura" para comenzar!</div>
+                <div class="options" id="options"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let gameState = {
+            level: 1,
+            hp: 100,
+            maxHp: 100,
+            exp: 0,
+            expNeeded: 100,
+            score: 0,
+            position: 0,
+            maxPosition: 5,
+            currentQuestion: 0,
+            gameStarted: false
+        };
+        
+        const questions = [
+            {
+                question: "¿Cuál es la capital de España?",
+                options: ["Barcelona", "Madrid", "Valencia", "Sevilla"],
+                correct: 1
+            },
+            {
+                question: "¿En qué año llegó el hombre a la Luna?",
+                options: ["1967", "1969", "1971", "1973"],
+                correct: 1
+            },
+            {
+                question: "¿Cuál es el planeta más grande del sistema solar?",
+                options: ["Saturno", "Neptuno", "Júpiter", "Urano"],
+                correct: 2
+            },
+            {
+                question: "¿Quién escribió 'Don Quijote de la Mancha'?",
+                options: ["Lope de Vega", "Miguel de Cervantes", "García Lorca", "Calderón"],
+                correct: 1
+            },
+            {
+                question: "¿Cuál es el océano más grande?",
+                options: ["Atlántico", "Índico", "Ártico", "Pacífico"],
+                correct: 3
+            },
+            {
+                question: "¿En qué continente está Egipto?",
+                options: ["Asia", "África", "Europa", "América"],
+                correct: 1
+            },
+            {
+                question: "¿Cuál es el elemento químico con símbolo 'O'?",
+                options: ["Oro", "Oxígeno", "Osmio", "Óxido"],
+                correct: 1
+            },
+            {
+                question: "¿Cuántos lados tiene un hexágono?",
+                options: ["5", "6", "7", "8"],
+                correct: 1
+            },
+            {
+                question: "¿Quién pintó 'La Mona Lisa'?",
+                options: ["Miguel Ángel", "Rafael", "Leonardo da Vinci", "Donatello"],
+                correct: 2
+            },
+            {
+                question: "¿Cuál es el río más largo del mundo?",
+                options: ["Nilo", "Amazonas", "Yangtsé", "Mississippi"],
+                correct: 0
+            },
+            {
+                question: "¿En qué año comenzó la Segunda Guerra Mundial?",
+                options: ["1938", "1939", "1940", "1941"],
+                correct: 1
+            },
+            {
+                question: "¿Cuál es la moneda de Japón?",
+                options: ["Yuan", "Won", "Yen", "Dong"],
+                correct: 2
+            },
+            {
+                question: "¿Cuántos huesos tiene el cuerpo humano adulto?",
+                options: ["196", "206", "216", "226"],
+                correct: 1
+            },
+            {
+                question: "¿Quién desarrolló la teoría de la relatividad?",
+                options: ["Newton", "Einstein", "Galileo", "Tesla"],
+                correct: 1
+            },
+            {
+                question: "¿Cuál es el animal terrestre más rápido?",
+                options: ["León", "Guepardo", "Antílope", "Caballo"],
+                correct: 1
+            }
+        ];
+        
+        function startGame() {
+            document.getElementById('startScreen').style.display = 'none';
+            gameState.gameStarted = true;
+            nextQuestion();
+        }
+        
+        function restartGame() {
+            document.getElementById('victoryScreen').style.display = 'none';
+            gameState = {
+                level: 1,
+                hp: 100,
+                maxHp: 100,
+                exp: 0,
+                expNeeded: 100,
+                score: 0,
+                position: 0,
+                maxPosition: 5,
+                currentQuestion: 0,
+                gameStarted: true
+            };
+            
+            document.getElementById('character').style.left = '50px';
+            updateUI();
+            nextQuestion();
+        }
+        
+        function nextQuestion() {
+            if (gameState.position >= gameState.maxPosition) {
+                showVictory();
+                return;
+            }
+            
+            if (gameState.currentQuestion >= questions.length) {
+                gameState.currentQuestion = 0;
+                questions.sort(() => Math.random() - 0.5); // Mezclar preguntas
+            }
+            
+            const question = questions[gameState.currentQuestion];
+            document.getElementById('question').textContent = question.question;
+            
+            const optionsContainer = document.getElementById('options');
+            optionsContainer.innerHTML = '';
+            
+            question.options.forEach((option, index) => {
+                const button = document.createElement('button');
+                button.className = 'option';
+                button.textContent = option;
+                button.onclick = () => answerQuestion(index, question.correct);
+                optionsContainer.appendChild(button);
+            });
+            
+            gameState.currentQuestion++;
+        }
+        
+        function answerQuestion(selectedIndex, correctIndex) {
+            const options = document.querySelectorAll('.option');
+            options.forEach((option, index) => {
+                option.disabled = true;
+                if (index === correctIndex) {
+                    option.classList.add('correct');
+                } else if (index === selectedIndex && index !== correctIndex) {
+                    option.classList.add('incorrect');
+                }
+            });
+            
+            setTimeout(() => {
+                if (selectedIndex === correctIndex) {
+                    correctAnswer();
+                } else {
+                    wrongAnswer();
+                }
+            }, 1500);
+        }
+        
+        function correctAnswer() {
+            gameState.score += 100;
+            gameState.exp += 50;
+            gameState.position++;
+            
+            // Subir de nivel si es necesario
+            if (gameState.exp >= gameState.expNeeded) {
+                levelUp();
+            }
+            
+            // Mover personaje
+            const character = document.getElementById('character');
+            const newPosition = 50 + (gameState.position * 150);
+            character.style.left = newPosition + 'px';
+            
+            updateUI();
+            
+            setTimeout(() => {
+                nextQuestion();
+            }, 1000);
+        }
+        
+        function wrongAnswer() {
+            gameState.hp -= 20;
+            
+            if (gameState.hp <= 0) {
+                gameState.hp = 0;
+                gameOver();
+                return;
+            }
+            
+            updateUI();
+            
+            setTimeout(() => {
+                nextQuestion();
+            }, 1000);
+        }
+        
+        function levelUp() {
+            gameState.level++;
+            gameState.exp = gameState.exp - gameState.expNeeded;
+            gameState.expNeeded = Math.floor(gameState.expNeeded * 1.2);
+            gameState.maxHp += 10;
+            gameState.hp = gameState.maxHp; // Restaurar HP completa al subir nivel
+            
+            // Efecto visual de subida de nivel
+            document.querySelector('.character-sprite').style.animation = 'pulse 1s ease';
+            setTimeout(() => {
+                document.querySelector('.character-sprite').style.animation = 'bob 1.5s ease-in-out infinite';
+            }, 1000);
+        }
+        
+        function gameOver() {
+            document.getElementById('question').textContent = '💀 ¡Has sido derrotado! Tu HP llegó a 0.';
+            document.getElementById('options').innerHTML = '<button class="start-btn" onclick="restartGame()">🔄 INTENTAR DE NUEVO</button>';
+        }
+        
+        function showVictory() {
+            document.getElementById('victoryScreen').style.display = 'flex';
+        }
+        
+        function updateUI() {
+            document.getElementById('level').textContent = gameState.level;
+            document.getElementById('score').textContent = gameState.score;
+            
+            const hpPercentage = (gameState.hp / gameState.maxHp) * 100;
+            document.getElementById('hpFill').style.width = hpPercentage + '%';
+            
+            const expPercentage = (gameState.exp / gameState.expNeeded) * 100;
+            document.getElementById('expFill').style.width = expPercentage + '%';
+        }
+        
+        // Inicializar UI
+        updateUI();
+    </script>
+</body>
+</html>
