@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aventurero del Saber</title>
     <style>
+        /* ==========================================
+           ESTILOS GLOBALES
+           Reseteo básico y configuración de fuente
+           ========================================== */
         * {
             margin: 0;
             padding: 0;
@@ -12,12 +16,16 @@
         }
         
         body {
-            font-family: 'Courier New', monospace;
+            font-family: 'Courier New', monospace; /* Fuente retro para estilo RPG */
             background: linear-gradient(135deg, #2c3e50, #3498db);
             color: white;
-            overflow: hidden;
+            overflow: hidden; /* Evita scroll en la página */
         }
         
+        /* ==========================================
+           CONTENEDOR PRINCIPAL DEL JUEGO
+           Ocupa toda la ventana del navegador
+           ========================================== */
         .game-container {
             width: 100vw;
             height: 100vh;
@@ -25,6 +33,10 @@
             overflow: hidden;
         }
         
+        /* ==========================================
+           MUNDO DEL JUEGO (70% superior de la pantalla)
+           Cielo degradado de azul a verde (césped)
+           ========================================== */
         .game-world {
             width: 100%;
             height: 70%;
@@ -33,6 +45,10 @@
             overflow: hidden;
         }
         
+        /* ==========================================
+           SISTEMA DE NUBES ANIMADAS
+           Nubes flotantes con animación suave
+           ========================================== */
         .clouds {
             position: absolute;
             top: 10%;
@@ -40,14 +56,16 @@
             height: 30%;
         }
         
+        /* Nube base - usa pseudo-elementos para crear formas más complejas */
         .cloud {
             position: absolute;
             background: white;
             border-radius: 50px;
             opacity: 0.8;
-            animation: float 8s ease-in-out infinite;
+            animation: float 8s ease-in-out infinite; /* Animación de flotación */
         }
         
+        /* Pseudo-elementos para dar volumen a las nubes */
         .cloud::before, .cloud::after {
             content: '';
             position: absolute;
@@ -55,6 +73,7 @@
             border-radius: 50px;
         }
         
+        /* Primera nube - posición y tamaño específicos */
         .cloud1 {
             width: 80px;
             height: 40px;
@@ -77,12 +96,13 @@
             right: 10px;
         }
         
+        /* Segunda nube - con delay diferente para movimiento variado */
         .cloud2 {
             width: 100px;
             height: 50px;
             top: 50px;
             left: 60%;
-            animation-delay: -4s;
+            animation-delay: -4s; /* Comienza en punto diferente de la animación */
         }
         
         .cloud2::before {
@@ -99,20 +119,27 @@
             right: 15px;
         }
         
+        /* Animación de flotación - sube y baja suavemente */
         @keyframes float {
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-20px); }
         }
         
+        /* ==========================================
+           SUELO Y CAMINO
+           Suelo marrón en la parte inferior
+           Camino de baldosas donde camina el personaje
+           ========================================== */
         .ground {
             position: absolute;
             bottom: 0;
             width: 100%;
             height: 20%;
-            background: #8B4513;
+            background: #8B4513; /* Café/marrón para tierra */
             border-top: 5px solid #654321;
         }
         
+        /* Camino con patrón repetido para simular baldosas */
         .path {
             position: absolute;
             bottom: 20%;
@@ -129,25 +156,31 @@
             border: 3px solid #8B4513;
         }
         
+        /* ==========================================
+           PERSONAJE PRINCIPAL (HÉROE)
+           Sprite del jugador que se mueve horizontalmente
+           ========================================== */
         .character {
             position: absolute;
-            bottom: 25%;
-            left: 50px;
+            bottom: 25%; /* Posicionado sobre el camino */
+            left: 50px; /* Posición inicial en el lado izquierdo */
             width: 40px;
             height: 60px;
-            transition: left 2s ease;
-            z-index: 10;
+            transition: left 2s ease; /* Animación suave al moverse (controlada por JS) */
+            z-index: 10; /* Asegura que esté sobre otros elementos */
         }
         
+        /* Cuerpo del personaje - forma básica con color dorado */
         .character-sprite {
             width: 100%;
             height: 100%;
-            background: #FFD700;
+            background: #FFD700; /* Dorado para armadura */
             border-radius: 20px 20px 10px 10px;
             position: relative;
-            animation: bob 1.5s ease-in-out infinite;
+            animation: bob 1.5s ease-in-out infinite; /* Animación de rebote constante */
         }
         
+        /* Cabeza del personaje (usando pseudo-elemento ::before) */
         .character-sprite::before {
             content: '';
             position: absolute;
@@ -156,11 +189,12 @@
             transform: translateX(-50%);
             width: 25px;
             height: 25px;
-            background: #FFDBAC;
-            border-radius: 50%;
+            background: #FFDBAC; /* Color piel */
+            border-radius: 50%; /* Círculo para la cabeza */
             border: 2px solid #DEB887;
         }
         
+        /* Espada del personaje (usando emoji) */
         .character-sprite::after {
             content: '⚔️';
             position: absolute;
@@ -170,6 +204,7 @@
             transform: rotate(45deg);
         }
         
+        /* Ojos del personaje */
         .eyes {
             position: absolute;
             top: 12px;
@@ -179,6 +214,7 @@
             height: 6px;
         }
         
+        /* Dos puntos negros para los ojos */
         .eyes::before, .eyes::after {
             content: '';
             position: absolute;
@@ -196,28 +232,35 @@
             right: 2px;
         }
         
+        /* Animación de rebote del personaje */
         @keyframes bob {
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-8px); }
         }
         
+        /* ==========================================
+           MONSTRUOS/ENEMIGOS
+           Grupo de enemigos en el lado derecho
+           ========================================== */
         .monsters {
             position: absolute;
             bottom: 25%;
-            right: 100px;
+            right: 100px; /* Posicionados al final del camino */
             display: flex;
-            gap: 30px;
+            gap: 30px; /* Espacio entre monstruos */
         }
         
+        /* Estilo individual de cada monstruo */
         .monster {
             width: 35px;
             height: 35px;
-            background: #8B0000;
-            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            background: #8B0000; /* Rojo oscuro */
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; /* Forma ovalada */
             position: relative;
-            animation: wiggle 2s ease-in-out infinite;
+            animation: wiggle 2s ease-in-out infinite; /* Movimiento de meneo */
         }
         
+        /* Emoji de monstruo */
         .monster::before {
             content: '👹';
             position: absolute;
@@ -227,11 +270,16 @@
             font-size: 25px;
         }
         
+        /* Animación de meneo para dar vida a los monstruos */
         @keyframes wiggle {
             0%, 100% { transform: rotate(-3deg); }
             50% { transform: rotate(3deg); }
         }
         
+        /* ==========================================
+           PANEL DE INTERFAZ DE USUARIO (UI)
+           Panel inferior con stats y preguntas (30% de la pantalla)
+           ========================================== */
         .ui-panel {
             position: absolute;
             bottom: 0;
@@ -245,6 +293,7 @@
             justify-content: space-between;
         }
         
+        /* Contenedor de estadísticas (nivel, HP, EXP, puntos) */
         .stats {
             display: flex;
             justify-content: space-between;
@@ -252,6 +301,7 @@
             margin-bottom: 15px;
         }
         
+        /* Estilo individual para cada stat */
         .stat {
             background: rgba(52, 73, 94, 0.8);
             padding: 8px 15px;
@@ -260,30 +310,37 @@
             font-weight: bold;
         }
         
+        /* Barras de HP y EXP - estructura base */
         .hp-bar, .exp-bar {
             width: 200px;
             height: 20px;
-            background: #34495e;
+            background: #34495e; /* Fondo gris para la barra vacía */
             border: 2px solid #ecf0f1;
             border-radius: 10px;
             overflow: hidden;
             position: relative;
         }
         
+        /* Barra de HP - relleno rojo que representa la vida actual */
         .hp-fill {
             height: 100%;
             background: linear-gradient(90deg, #e74c3c, #c0392b);
-            width: 100%;
-            transition: width 0.5s ease;
+            width: 100%; /* Controlado por JavaScript según el HP actual */
+            transition: width 0.5s ease; /* Animación suave al perder/ganar vida */
         }
         
+        /* Barra de EXP - relleno naranja que representa la experiencia */
         .exp-fill {
             height: 100%;
             background: linear-gradient(90deg, #f39c12, #e67e22);
-            width: 0%;
+            width: 0%; /* Inicia vacía, controlada por JavaScript */
             transition: width 0.8s ease;
         }
         
+        /* ==========================================
+           ÁREA DE PREGUNTAS Y RESPUESTAS
+           Zona donde aparecen las preguntas y botones
+           ========================================== */
         .question-area {
             background: rgba(44, 62, 80, 0.9);
             padding: 15px;
@@ -292,18 +349,21 @@
             min-height: 120px;
         }
         
+        /* Texto de la pregunta */
         .question {
             font-size: 16px;
             margin-bottom: 15px;
             line-height: 1.4;
         }
         
+        /* Grid de opciones - 2 columnas en desktop */
         .options {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
         }
         
+        /* Botones de opciones/respuestas */
         .option {
             background: #3498db;
             color: white;
@@ -316,67 +376,80 @@
             transition: all 0.3s ease;
         }
         
+        /* Efecto hover en botones */
         .option:hover {
             background: #2980b9;
-            transform: translateY(-2px);
+            transform: translateY(-2px); /* Sube ligeramente al pasar el mouse */
         }
         
+        /* Clase para respuesta correcta - verde */
         .option.correct {
             background: #27ae60;
             animation: pulse 0.6s ease;
         }
         
+        /* Clase para respuesta incorrecta - rojo */
         .option.incorrect {
             background: #e74c3c;
             animation: shake 0.6s ease;
         }
         
+        /* Animación de pulso para respuesta correcta */
         @keyframes pulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.05); }
             100% { transform: scale(1); }
         }
         
+        /* Animación de sacudida para respuesta incorrecta */
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-5px); }
             75% { transform: translateX(5px); }
         }
         
+        /* ==========================================
+           PANTALLA DE INICIO
+           Pantalla que aparece al cargar el juego
+           ========================================== */
         .start-screen {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.9);
+            background: rgba(0, 0, 0, 0.9); /* Fondo negro semi-transparente */
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            z-index: 100;
+            z-index: 100; /* Aparece sobre todo lo demás */
         }
         
+        /* Título principal del juego */
         .title {
             font-size: 48px;
-            color: #f39c12;
+            color: #f39c12; /* Dorado/naranja */
             text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
             margin-bottom: 20px;
-            animation: glow 2s ease-in-out infinite alternate;
+            animation: glow 2s ease-in-out infinite alternate; /* Efecto de brillo pulsante */
         }
         
+        /* Animación de brillo para el título */
         @keyframes glow {
             from { text-shadow: 0 0 20px #f39c12; }
             to { text-shadow: 0 0 30px #f39c12, 0 0 40px #f39c12; }
         }
         
+        /* Subtítulo/descripción del juego */
         .subtitle {
             font-size: 18px;
             margin-bottom: 30px;
             text-align: center;
-            color: #bdc3c7;
+            color: #bdc3c7; /* Gris claro */
         }
         
+        /* Botón de inicio */
         .start-btn {
             background: linear-gradient(45deg, #e74c3c, #c0392b);
             color: white;
@@ -386,58 +459,75 @@
             border-radius: 25px;
             cursor: pointer;
             transition: all 0.3s ease;
-            animation: bounce 2s infinite;
+            animation: bounce 2s infinite; /* Rebote continuo para llamar la atención */
         }
         
+        /* Efecto hover del botón */
         .start-btn:hover {
             transform: scale(1.1);
             background: linear-gradient(45deg, #c0392b, #a93226);
         }
         
+        /* Animación de rebote del botón */
         @keyframes bounce {
             0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
             40% { transform: translateY(-10px); }
             60% { transform: translateY(-5px); }
         }
         
+        /* ==========================================
+           PANTALLA DE VICTORIA
+           Aparece cuando el jugador completa el juego
+           ========================================== */
         .victory-screen {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #f39c12, #e67e22);
-            display: none;
+            background: linear-gradient(135deg, #f39c12, #e67e22); /* Fondo dorado/naranja */
+            display: none; /* Oculta por defecto, mostrada por JavaScript */
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 100;
         }
         
+        /* Título de victoria */
         .victory-title {
             font-size: 60px;
             color: white;
             text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
             margin-bottom: 20px;
-            animation: victory-glow 1.5s ease-in-out infinite alternate;
+            animation: victory-glow 1.5s ease-in-out infinite alternate; /* Pulsa en tamaño */
         }
         
+        /* Animación de victoria - crece y decrece */
         @keyframes victory-glow {
             from { transform: scale(1); }
             to { transform: scale(1.1); }
         }
         
+        /* ==========================================
+           DISEÑO RESPONSIVE (MÓVILES Y TABLETS)
+           Ajustes para pantallas pequeñas
+           ========================================== */
         @media (max-width: 768px) {
             .title { font-size: 36px; }
             .victory-title { font-size: 48px; }
-            .options { grid-template-columns: 1fr; }
+            .options { grid-template-columns: 1fr; } /* Una columna en móvil */
             .stats { flex-wrap: wrap; gap: 10px; }
-            .hp-bar, .exp-bar { width: 150px; }
+            .hp-bar, .exp-bar { width: 150px; } /* Barras más pequeñas */
         }
     </style>
 </head>
 <body>
+    <!-- ==========================================
+         ESTRUCTURA HTML DEL JUEGO
+         Contiene todos los elementos visuales
+         ========================================== -->
     <div class="game-container">
+        <!-- Pantalla de inicio - Se oculta al hacer clic en "Iniciar Aventura" -->
         <div class="start-screen" id="startScreen">
             <h1 class="title">🏰 AVENTURERO DEL SABER 🗡️</h1>
             <p class="subtitle">
@@ -448,6 +538,7 @@
             <button class="start-btn" onclick="startGame()">⚔️ INICIAR AVENTURA</button>
         </div>
         
+        <!-- Pantalla de victoria - Se muestra al completar todas las preguntas -->
         <div class="victory-screen" id="victoryScreen">
             <h1 class="victory-title">🎉 ¡VICTORIA! 🎉</h1>
             <p class="subtitle">
@@ -457,20 +548,25 @@
             <button class="start-btn" onclick="restartGame()">🔄 NUEVA AVENTURA</button>
         </div>
         
+        <!-- Mundo del juego - Área visual principal -->
         <div class="game-world">
+            <!-- Nubes decorativas en el cielo -->
             <div class="clouds">
                 <div class="cloud cloud1"></div>
                 <div class="cloud cloud2"></div>
             </div>
             
+            <!-- Camino por donde camina el personaje -->
             <div class="path"></div>
             
+            <!-- Personaje principal - Su posición 'left' se modifica con JavaScript -->
             <div class="character" id="character">
                 <div class="character-sprite">
                     <div class="eyes"></div>
                 </div>
             </div>
             
+            <!-- Grupo de monstruos enemigos - Representan los desafíos -->
             <div class="monsters" id="monsters">
                 <div class="monster"></div>
                 <div class="monster"></div>
@@ -479,10 +575,13 @@
                 <div class="monster"></div>
             </div>
             
+            <!-- Suelo/tierra -->
             <div class="ground"></div>
         </div>
         
+        <!-- Panel de interfaz con estadísticas y preguntas -->
         <div class="ui-panel">
+            <!-- Barra de estadísticas del jugador -->
             <div class="stats">
                 <div class="stat">Nivel: <span id="level">1</span></div>
                 <div class="stat">
@@ -494,32 +593,43 @@
                 <div class="stat">Puntos: <span id="score">0</span></div>
             </div>
             
+            <!-- Área donde aparecen las preguntas y opciones -->
             <div class="question-area">
                 <div class="question" id="question">¡Presiona "Iniciar Aventura" para comenzar!</div>
+                <!-- Las opciones se generan dinámicamente con JavaScript -->
                 <div class="options" id="options"></div>
             </div>
         </div>
     </div>
 
     <script>
+        // ==========================================
+        // ESTADO DEL JUEGO (VARIABLES GLOBALES)
+        // Almacena toda la información del progreso
+        // ==========================================
         let gameState = {
-            level: 1,
-            hp: 100,
-            maxHp: 100,
-            exp: 0,
-            expNeeded: 100,
-            score: 0,
-            position: 0,
-            maxPosition: 5,
-            currentQuestion: 0,
-            gameStarted: false
+            level: 1,              // Nivel actual del jugador
+            hp: 100,               // Vida actual (0-100)
+            maxHp: 100,            // Vida máxima (aumenta al subir de nivel)
+            exp: 0,                // Experiencia actual
+            expNeeded: 100,        // Experiencia necesaria para siguiente nivel
+            score: 0,              // Puntuación total
+            position: 0,           // Posición actual en el camino (0-5)
+            maxPosition: 5,        // Posición final para ganar
+            currentQuestion: 0,    // Índice de pregunta actual
+            gameStarted: false     // Estado del juego
         };
         
+        // ==========================================
+        // BANCO DE PREGUNTAS
+        // Array con todas las preguntas del juego
+        // PARA AGREGAR MÁS PREGUNTAS: Copiar el formato
+        // ==========================================
         const questions = [
             {
                 question: "¿Cuál es la capital de España?",
                 options: ["Barcelona", "Madrid", "Valencia", "Sevilla"],
-                correct: 1
+                correct: 1  // Índice de la respuesta correcta (0-3)
             },
             {
                 question: "¿En qué año llegó el hombre a la Luna?",
@@ -528,7 +638,7 @@
             },
             {
                 question: "¿Cuál es el planeta más grande del sistema solar?",
-                options: ["Saturno", "Neptuno", "Júpiter", "Marte"],
+                options: ["Saturno", "Neptuno", "Júpiter", "Urano"],
                 correct: 2
             },
             {
@@ -591,16 +701,30 @@
                 options: ["León", "Guepardo", "Antílope", "Caballo"],
                 correct: 1
             }
+            // PUEDES AGREGAR MÁS PREGUNTAS AQUÍ siguiendo el mismo formato
         ];
         
+        // ==========================================
+        // FUNCIÓN: INICIAR JUEGO
+        // Se ejecuta al hacer clic en "Iniciar Aventura"
+        // ==========================================
         function startGame() {
+            // Ocultar pantalla de inicio
             document.getElementById('startScreen').style.display = 'none';
             gameState.gameStarted = true;
+            // Cargar primera pregunta
             nextQuestion();
         }
         
+        // ==========================================
+        // FUNCIÓN: REINICIAR JUEGO
+        // Resetea todos los valores y comienza de nuevo
+        // ==========================================
         function restartGame() {
+            // Ocultar pantalla de victoria
             document.getElementById('victoryScreen').style.display = 'none';
+            
+            // Resetear todos los valores del estado del juego
             gameState = {
                 level: 1,
                 hp: 100,
@@ -614,132 +738,210 @@
                 gameStarted: true
             };
             
+            // Volver personaje a posición inicial
             document.getElementById('character').style.left = '50px';
             updateUI();
             nextQuestion();
         }
         
+        // ==========================================
+        // FUNCIÓN: CARGAR SIGUIENTE PREGUNTA
+        // Muestra una nueva pregunta y genera los botones
+        // ==========================================
         function nextQuestion() {
+            // Verificar si el jugador llegó al final del camino
             if (gameState.position >= gameState.maxPosition) {
                 showVictory();
                 return;
             }
             
+            // Si se acabaron las preguntas, reiniciar y mezclar
             if (gameState.currentQuestion >= questions.length) {
                 gameState.currentQuestion = 0;
-                questions.sort(() => Math.random() - 0.5); // Mezclar preguntas
+                questions.sort(() => Math.random() - 0.5); // Mezclar preguntas aleatoriamente
             }
             
+            // Obtener pregunta actual
             const question = questions[gameState.currentQuestion];
             document.getElementById('question').textContent = question.question;
             
+            // Generar botones de opciones
             const optionsContainer = document.getElementById('options');
-            optionsContainer.innerHTML = '';
+            optionsContainer.innerHTML = ''; // Limpiar opciones anteriores
             
+            // Crear un botón para cada opción
             question.options.forEach((option, index) => {
                 const button = document.createElement('button');
                 button.className = 'option';
                 button.textContent = option;
+                // Asignar función onclick para manejar la respuesta
                 button.onclick = () => answerQuestion(index, question.correct);
                 optionsContainer.appendChild(button);
             });
             
+            // Avanzar al siguiente índice de pregunta
             gameState.currentQuestion++;
         }
         
+        // ==========================================
+        // FUNCIÓN: PROCESAR RESPUESTA
+        // Maneja cuando el jugador selecciona una opción
+        // ==========================================
         function answerQuestion(selectedIndex, correctIndex) {
             const options = document.querySelectorAll('.option');
+            
+            // Deshabilitar todos los botones para evitar múltiples clics
             options.forEach((option, index) => {
                 option.disabled = true;
+                
+                // Marcar la respuesta correcta en verde
                 if (index === correctIndex) {
                     option.classList.add('correct');
-                } else if (index === selectedIndex && index !== correctIndex) {
+                } 
+                // Marcar la respuesta incorrecta seleccionada en rojo
+                else if (index === selectedIndex && index !== correctIndex) {
                     option.classList.add('incorrect');
                 }
             });
             
+            // Esperar 1.5 segundos para que el jugador vea el resultado
             setTimeout(() => {
                 if (selectedIndex === correctIndex) {
-                    correctAnswer();
+                    correctAnswer(); // Procesar respuesta correcta
                 } else {
-                    wrongAnswer();
+                    wrongAnswer(); // Procesar respuesta incorrecta
                 }
             }, 1500);
         }
         
+        // ==========================================
+        // FUNCIÓN: RESPUESTA CORRECTA
+        // Otorga recompensas y mueve al personaje
+        // PARA MODIFICAR RECOMPENSAS: Cambiar los valores +100 y +50
+        // ==========================================
         function correctAnswer() {
-            gameState.score += 100;
-            gameState.exp += 50;
-            gameState.position++;
+            // Otorgar recompensas
+            gameState.score += 100;  // +100 puntos por respuesta correcta
+            gameState.exp += 50;     // +50 experiencia
+            gameState.position++;    // Avanzar una posición
             
-            // Subir de nivel si es necesario
+            // Verificar si el jugador debe subir de nivel
             if (gameState.exp >= gameState.expNeeded) {
                 levelUp();
             }
             
-            // Mover personaje
+            // Mover el personaje visualmente
             const character = document.getElementById('character');
-            const newPosition = 50 + (gameState.position * 150);
+            const newPosition = 50 + (gameState.position * 150); // 150px por cada posición
             character.style.left = newPosition + 'px';
             
+            // Actualizar interfaz
             updateUI();
             
+            // Cargar siguiente pregunta después de 1 segundo
             setTimeout(() => {
                 nextQuestion();
             }, 1000);
         }
         
+        // ==========================================
+        // FUNCIÓN: RESPUESTA INCORRECTA
+        // Reduce HP y verifica si el jugador pierde
+        // PARA MODIFICAR DAÑO: Cambiar el valor -20
+        // ==========================================
         function wrongAnswer() {
-            gameState.hp -= 20;
+            gameState.hp -= 20;  // Pierde 20 HP por error
             
+            // Verificar si el jugador murió (HP llegó a 0)
             if (gameState.hp <= 0) {
                 gameState.hp = 0;
                 gameOver();
                 return;
             }
             
+            // Actualizar interfaz
             updateUI();
             
+            // Cargar siguiente pregunta después de 1 segundo
             setTimeout(() => {
                 nextQuestion();
             }, 1000);
         }
         
+        // ==========================================
+        // FUNCIÓN: SUBIR DE NIVEL
+        // Aumenta el nivel y mejora las estadísticas
+        // PARA MODIFICAR PROGRESIÓN: Cambiar multiplicadores
+        // ==========================================
         function levelUp() {
-            gameState.level++;
-            gameState.exp = gameState.exp - gameState.expNeeded;
-            gameState.expNeeded = Math.floor(gameState.expNeeded * 1.2);
-            gameState.maxHp += 10;
-            gameState.hp = gameState.maxHp; // Restaurar HP completa al subir nivel
+            gameState.level++;                                      // Aumentar nivel
+            gameState.exp = gameState.exp - gameState.expNeeded;   // Restar EXP usada
+            gameState.expNeeded = Math.floor(gameState.expNeeded * 1.2);  // +20% EXP necesaria
+            gameState.maxHp += 10;                                  // +10 HP máximo
+            gameState.hp = gameState.maxHp;                        // Restaurar HP completa
             
-            // Efecto visual de subida de nivel
+            // Efecto visual de subida de nivel (pulso en el personaje)
             document.querySelector('.character-sprite').style.animation = 'pulse 1s ease';
             setTimeout(() => {
+                // Restaurar animación normal después de 1 segundo
                 document.querySelector('.character-sprite').style.animation = 'bob 1.5s ease-in-out infinite';
             }, 1000);
         }
         
+        // ==========================================
+        // FUNCIÓN: GAME OVER
+        // Se ejecuta cuando el HP llega a 0
+        // ==========================================
         function gameOver() {
             document.getElementById('question').textContent = '💀 ¡Has sido derrotado! Tu HP llegó a 0.';
-            document.getElementById('options').innerHTML = '<button class="start-btn" onclick="restartGame()">🔄 INTENTAR DE NUEVO</button>';
+            document.getElementById('options').innerHTML = 
+                '<button class="start-btn" onclick="restartGame()">🔄 INTENTAR DE NUEVO</button>';
         }
         
+        // ==========================================
+        // FUNCIÓN: MOSTRAR VICTORIA
+        // Se ejecuta al completar todas las posiciones
+        // ==========================================
         function showVictory() {
             document.getElementById('victoryScreen').style.display = 'flex';
         }
         
+        // ==========================================
+        // FUNCIÓN: ACTUALIZAR INTERFAZ
+        // Actualiza todos los elementos visuales según el estado
+        // Se llama cada vez que cambia algún valor del juego
+        // ==========================================
         function updateUI() {
+            // Actualizar texto de nivel
             document.getElementById('level').textContent = gameState.level;
+            
+            // Actualizar puntuación
             document.getElementById('score').textContent = gameState.score;
             
+            // Actualizar barra de HP (ancho basado en porcentaje)
             const hpPercentage = (gameState.hp / gameState.maxHp) * 100;
             document.getElementById('hpFill').style.width = hpPercentage + '%';
             
+            // Actualizar barra de EXP (ancho basado en porcentaje)
             const expPercentage = (gameState.exp / gameState.expNeeded) * 100;
             document.getElementById('expFill').style.width = expPercentage + '%';
         }
         
-        // Inicializar UI
+        // ==========================================
+        // INICIALIZACIÓN
+        // Llamar updateUI al cargar la página para mostrar valores iniciales
+        // ==========================================
+        updateUI();
+    </script>
+</body>
+</html>
+            document.getElementById('expFill').style.width = expPercentage + '%';
+        }
+        
+        // ==========================================
+        // INICIALIZACIÓN
+        // Llamar updateUI al cargar la página para mostrar valores iniciales
+        // ==========================================
         updateUI();
     </script>
 </body>
