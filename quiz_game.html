@@ -628,6 +628,66 @@
         }
 
         /* ==========================================
+           CONTROLES MÓVILES (TÁCTILES)
+           Botones virtuales para jugar en dispositivos móviles
+           ========================================== */
+        .mobile-controls {
+            position: fixed;
+            bottom: 100px;
+            left: 0;
+            right: 0;
+            display: none;
+            justify-content: space-between;
+            align-items: flex-end;
+            padding: 20px;
+            gap: 10px;
+            z-index: 999;
+        }
+
+        .mobile-controls.active {
+            display: flex;
+        }
+
+        .movement-buttons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .mobile-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 10px;
+            border: 3px solid #ffd93d;
+            background: linear-gradient(135deg, #ff6b6b, #ff8c8c);
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            cursor: pointer;
+            touch-action: manipulation;
+            user-select: none;
+            transition: all 0.1s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .mobile-btn:active {
+            transform: scale(0.9);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .jump-btn {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2980b9, #3498db);
+            border: 4px solid #ffd93d;
+            font-size: 32px;
+        }
+
+        /* ==========================================
            DISEÑO RESPONSIVE
            Adaptación para dispositivos móviles
            ========================================== */
@@ -684,6 +744,37 @@
             .instruction-section h3 {
                 font-size: 18px;
             }
+
+            /* Estilos responsive para el juego */
+            .game-hud {
+                padding: 10px 15px;
+                font-size: 14px;
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .hud-item {
+                gap: 5px;
+            }
+
+            /* Mostrar controles móviles */
+            .mobile-controls.active {
+                display: flex;
+            }
+
+            .mobile-btn {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+                border: 2px solid #ffd93d;
+            }
+
+            .jump-btn {
+                width: 70px;
+                height: 70px;
+                font-size: 28px;
+                border: 3px solid #ffd93d;
+            }
         }
 
         /* Estilos para pantallas extra pequeñas */
@@ -732,6 +823,27 @@
 
             .instruction-section h3 {
                 font-size: 16px;
+            }
+
+            /* Estilos responsive para el juego en pantallas pequeñas */
+            .game-hud {
+                padding: 8px 10px;
+                font-size: 12px;
+                flex-wrap: wrap;
+            }
+
+            .mobile-btn {
+                width: 45px;
+                height: 45px;
+                font-size: 18px;
+                border: 2px solid #ffd93d;
+            }
+
+            .jump-btn {
+                width: 60px;
+                height: 60px;
+                font-size: 24px;
+                border: 2px solid #ffd93d;
             }
         }
     </style>
@@ -817,6 +929,15 @@
                 <div class="hud-item lives-indicator">❤️ Vidas: <span id="lives">3</span></div>
                 <div class="hud-item level-indicator">🏰 Nivel: <span id="level">1</span></div>
                 <div class="hud-item score-indicator">💰 Puntos: <span id="score">0</span></div>
+            </div>
+
+            <!-- CONTROLES MÓVILES -->
+            <div class="mobile-controls" id="mobileControls">
+                <div class="movement-buttons">
+                    <button class="mobile-btn" id="leftBtn" title="Mover izquierda">⬅️</button>
+                    <button class="mobile-btn" id="rightBtn" title="Mover derecha">➡️</button>
+                </div>
+                <button class="jump-btn" id="jumpBtn" title="Saltar">🚀</button>
             </div>
         </div>
 
@@ -1010,6 +1131,7 @@
             stopMusic();
             isMuted = false;
             updateMuteButton();
+            updateMobileControlsVisibility();
         }
 
         function restartLevel() {
@@ -1099,6 +1221,9 @@
             document.getElementById('score').textContent = gameState.score;
 
             document.getElementById('gameScreen').style.display = 'flex';
+
+            // Mostrar controles móviles si es necesario
+            updateMobileControlsVisibility();
 
             // Iniciar loop del juego
             gameLoop();
@@ -1368,6 +1493,99 @@
             if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
                 keys.right = false;
             }
+        });
+
+        // ==========================================
+        // CONTROLES MÓVILES (TÁCTILES)
+        // ==========================================
+        const mobileControls = document.getElementById('mobileControls');
+        const leftBtn = document.getElementById('leftBtn');
+        const rightBtn = document.getElementById('rightBtn');
+        const jumpBtn = document.getElementById('jumpBtn');
+
+        // Detectar si es dispositivo móvil
+        function isMobileDevice() {
+            return window.innerWidth <= 768;
+        }
+
+        // Mostrar/ocultar controles móviles según el estado del juego
+        function updateMobileControlsVisibility() {
+            if (gameState.gameRunning && isMobileDevice()) {
+                mobileControls.classList.add('active');
+            } else {
+                mobileControls.classList.remove('active');
+            }
+        }
+
+        // Eventos del botón izquierdo
+        leftBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            keys.left = true;
+            leftBtn.style.opacity = '0.7';
+        });
+
+        leftBtn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            keys.left = false;
+            leftBtn.style.opacity = '1';
+        });
+
+        leftBtn.addEventListener('mousedown', () => {
+            keys.left = true;
+            leftBtn.style.opacity = '0.7';
+        });
+
+        leftBtn.addEventListener('mouseup', () => {
+            keys.left = false;
+            leftBtn.style.opacity = '1';
+        });
+
+        // Eventos del botón derecho
+        rightBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            keys.right = true;
+            rightBtn.style.opacity = '0.7';
+        });
+
+        rightBtn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            keys.right = false;
+            rightBtn.style.opacity = '1';
+        });
+
+        rightBtn.addEventListener('mousedown', () => {
+            keys.right = true;
+            rightBtn.style.opacity = '0.7';
+        });
+
+        rightBtn.addEventListener('mouseup', () => {
+            keys.right = false;
+            rightBtn.style.opacity = '1';
+        });
+
+        // Eventos del botón de salto
+        jumpBtn.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (physics.isOnGround) {
+                keys.jump = true;
+                jumpBtn.style.opacity = '0.7';
+            }
+        });
+
+        jumpBtn.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            jumpBtn.style.opacity = '1';
+        });
+
+        jumpBtn.addEventListener('mousedown', () => {
+            if (physics.isOnGround) {
+                keys.jump = true;
+                jumpBtn.style.opacity = '0.7';
+            }
+        });
+
+        jumpBtn.addEventListener('mouseup', () => {
+            jumpBtn.style.opacity = '1';
         });
 
         // ==========================================
