@@ -186,7 +186,8 @@
             flex: 1;
             position: relative;
             overflow: hidden;
-            background: linear-gradient(to bottom, #87CEEB 0%, #E0F6FF 50%, #228B22 100%);
+            background: url('fondo.jpg') repeat;
+            background-size: 800px 400px;
         }
 
         .game-hud {
@@ -223,36 +224,23 @@
            ========================================== */
         .mario {
             position: absolute;
-            width: 32px;
-            height: 40px;
-            background: #ff0000;
-            border-radius: 5px 5px 2px 2px;
+            width: 60px;
+            height: 60px;
+            background: url('personaje.png') center/contain no-repeat;
             z-index: 100;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
         }
 
         .mario::before {
             content: '';
-            position: absolute;
-            top: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 20px;
-            height: 18px;
-            background: #ffdbac;
-            border-radius: 50%;
-            border: 2px solid #ff0000;
+            display: none;
         }
 
         .mario::after {
             content: '';
-            position: absolute;
-            top: 8px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 24px;
-            height: 16px;
-            background: #0066ff;
-            border-radius: 3px;
+            display: none;
         }
 
         /* ==========================================
@@ -297,34 +285,23 @@
            ========================================== */
         .enemy {
             position: absolute;
-            width: 32px;
-            height: 26px;
-            background: #8B6914;
-            border-radius: 50% 50% 30% 30%;
-            border: 2px solid #654321;
+            width: 50px;
+            height: 50px;
+            background: url('villano.png') center/contain no-repeat;
             z-index: 50;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
         }
 
         .enemy::before {
             content: '';
-            position: absolute;
-            top: 5px;
-            left: 8px;
-            width: 6px;
-            height: 6px;
-            background: black;
-            border-radius: 50%;
+            display: none;
         }
 
         .enemy::after {
             content: '';
-            position: absolute;
-            top: 5px;
-            right: 8px;
-            width: 6px;
-            height: 6px;
-            background: black;
-            border-radius: 50%;
+            display: none;
         }
 
         /* ==========================================
@@ -964,7 +941,7 @@
 
             // Límites del mundo
             if (gameState.marioX < 0) gameState.marioX = 0;
-            if (gameState.marioX > window.innerWidth - 32) gameState.marioX = window.innerWidth - 32;
+            if (gameState.marioX > window.innerWidth - 60) gameState.marioX = window.innerWidth - 60;
             if (gameState.marioY > window.innerHeight) {
                 loseLive();
                 return;
@@ -973,12 +950,12 @@
             // Colisiones con plataformas
             physics.isOnGround = false;
             gameState.platforms.forEach(p => {
-                if (gameState.marioX + 32 > p.x &&
+                if (gameState.marioX + 60 > p.x &&
                     gameState.marioX < p.x + p.w &&
-                    gameState.marioY + 40 >= p.y &&
-                    gameState.marioY + 40 <= p.y + p.h + 5 &&
+                    gameState.marioY + 60 >= p.y &&
+                    gameState.marioY + 60 <= p.y + p.h + 5 &&
                     physics.marioVelocityY >= 0) {
-                    gameState.marioY = p.y - 40;
+                    gameState.marioY = p.y - 60;
                     physics.marioVelocityY = 0;
                     physics.isOnGround = true;
                     physics.isJumping = false;
@@ -989,9 +966,9 @@
             const config = levelConfig[gameState.currentLevel];
             if (config.lava) {
                 config.lava.forEach(l => {
-                    if (gameState.marioX + 32 > l.x &&
+                    if (gameState.marioX + 60 > l.x &&
                         gameState.marioX < l.x + l.w &&
-                        gameState.marioY + 40 > l.y &&
+                        gameState.marioY + 60 > l.y &&
                         gameState.marioY < l.y + l.h) {
                         loseLive();
                         return;
@@ -1001,10 +978,10 @@
 
             // Colisiones con enemigos
             gameState.enemies.forEach(e => {
-                if (gameState.marioX + 32 > e.x &&
-                    gameState.marioX < e.x + 32 &&
-                    gameState.marioY + 40 > e.y &&
-                    gameState.marioY < e.y + 26) {
+                if (gameState.marioX + 60 > e.x &&
+                    gameState.marioX < e.x + 50 &&
+                    gameState.marioY + 60 > e.y &&
+                    gameState.marioY < e.y + 50) {
                     loseLive();
                 }
             });
@@ -1012,9 +989,9 @@
             // Recoger monedas
             gameState.coins.forEach(c => {
                 if (!c.collected &&
-                    gameState.marioX + 32 > c.x &&
+                    gameState.marioX + 60 > c.x &&
                     gameState.marioX < c.x + 16 &&
-                    gameState.marioY + 40 > c.y &&
+                    gameState.marioY + 60 > c.y &&
                     gameState.marioY < c.y + 16) {
                     c.collected = true;
                     c.element.classList.add('collected');
@@ -1027,7 +1004,7 @@
             });
 
             // Verificar si llegó al final
-            if (gameState.marioX + 32 >= config.goalX) {
+            if (gameState.marioX + 60 >= config.goalX) {
                 gameState.gameRunning = false;
                 startQuiz();
                 return;
@@ -1036,7 +1013,7 @@
             // Mover enemigos
             gameState.enemies.forEach(e => {
                 e.x += e.dirX * 2;
-                if (e.x < 0 || e.x > window.innerWidth - 32) {
+                if (e.x < 0 || e.x > window.innerWidth - 50) {
                     e.dirX *= -1;
                 }
                 e.element.style.left = e.x + 'px';
