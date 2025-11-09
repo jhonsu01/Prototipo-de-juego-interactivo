@@ -215,6 +215,16 @@
             position: relative;
             overflow: hidden;
             background: url('fondo.jpg') center/cover no-repeat;
+            background-attachment: fixed;
+        }
+
+        /* Contenedor scrolleable para implementar cámara */
+        #gameWorld {
+            position: absolute;
+            width: 100%;
+            min-height: 100%;
+            top: 0;
+            left: 0;
         }
 
         .game-hud {
@@ -1009,6 +1019,30 @@
         };
 
         // ==========================================
+        // SISTEMA DE CÁMARA
+        // Sigue al personaje horizontalmente
+        // ==========================================
+        const camera = {
+            x: 0,
+            width: window.innerWidth,
+            offsetX: 0
+        };
+
+        function updateCamera() {
+            const gameWorld = document.getElementById('gameWorld');
+            const cameraWidth = window.innerWidth;
+
+            // La cámara sigue al personaje manteniéndolo en el centro
+            camera.x = gameState.marioX - (cameraWidth / 3);
+
+            // Limitar la cámara para no ir más allá del nivel
+            if (camera.x < 0) camera.x = 0;
+
+            // Ajustar la posición del gameWorld
+            gameWorld.style.transform = `translateX(-${camera.x}px)`;
+        }
+
+        // ==========================================
         // PREGUNTAS POR NIVEL
         // ==========================================
         const levelQuestions = {
@@ -1215,6 +1249,11 @@
             mario.style.top = gameState.marioY + 'px';
             gameWorld.appendChild(mario);
 
+            // Resetear cámara al inicio del nivel
+            camera.x = 0;
+            const gameWorldElement = document.getElementById('gameWorld');
+            gameWorldElement.style.transform = 'translateX(0px)';
+
             // Actualizar HUD
             document.getElementById('level').textContent = levelNum;
             document.getElementById('lives').textContent = gameState.lives;
@@ -1347,6 +1386,9 @@
             const mario = document.getElementById('mario');
             mario.style.left = gameState.marioX + 'px';
             mario.style.top = gameState.marioY + 'px';
+
+            // Actualizar cámara para seguir al personaje
+            updateCamera();
 
             keys.jump = false;
             requestAnimationFrame(gameLoop);
