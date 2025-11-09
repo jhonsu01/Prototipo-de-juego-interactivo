@@ -575,6 +575,39 @@
         }
 
         /* ==========================================
+           BOTÓN DE MUTE (AUDIO)
+           Controla el silenciamiento de la música
+           ========================================== */
+        .mute-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ff6b6b, #ff8c8c);
+            border: 3px solid #ffd93d;
+            cursor: pointer;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .mute-btn:hover {
+            transform: scale(1.1);
+            background: linear-gradient(135deg, #ff8c8c, #ffb3b3);
+            box-shadow: 0 6px 20px rgba(255, 107, 107, 0.5);
+        }
+
+        .mute-btn:active {
+            transform: scale(0.95);
+        }
+
+        /* ==========================================
            DISEÑO RESPONSIVE
            Adaptación para dispositivos móviles
            ========================================== */
@@ -604,6 +637,14 @@
     </style>
 </head>
 <body>
+    <!-- AUDIO DE FONDO -->
+    <audio id="backgroundMusic" loop>
+        <source src="song.ogg" type="audio/ogg">
+    </audio>
+
+    <!-- BOTÓN DE MUTE -->
+    <button class="mute-btn" id="muteBtn" onclick="toggleMute()" title="Silenciar/Activar música">🔊</button>
+
     <div class="game-container">
         <!-- MENÚ PRINCIPAL -->
         <div class="menu-screen" id="menuScreen">
@@ -840,6 +881,7 @@
             gameState.currentLevel = 1;
             gameState.lives = 3;
             gameState.score = 0;
+            playMusic();
             loadLevel(1);
         }
 
@@ -850,6 +892,9 @@
             document.getElementById('gameScreen').style.display = 'none';
             document.getElementById('quizScreen').style.display = 'none';
             gameState.gameRunning = false;
+            stopMusic();
+            isMuted = false;
+            updateMuteButton();
         }
 
         function restartLevel() {
@@ -1206,6 +1251,55 @@
                 keys.right = false;
             }
         });
+
+        // ==========================================
+        // SISTEMA DE AUDIO
+        // ==========================================
+        const backgroundMusic = document.getElementById('backgroundMusic');
+        const muteBtn = document.getElementById('muteBtn');
+        let isMuted = false;
+
+        // Iniciar música cuando el juego comienza
+        function playMusic() {
+            backgroundMusic.play().catch(err => {
+                console.log('No se pudo reproducir la música automáticamente:', err);
+            });
+        }
+
+        // Detener música
+        function stopMusic() {
+            backgroundMusic.pause();
+        }
+
+        // Alternar silenciamiento
+        function toggleMute() {
+            isMuted = !isMuted;
+
+            if (isMuted) {
+                backgroundMusic.pause();
+                muteBtn.textContent = '🔇';
+                muteBtn.style.background = 'linear-gradient(135deg, #888, #aaa)';
+            } else {
+                backgroundMusic.play().catch(err => {
+                    console.log('No se pudo reproducir la música:', err);
+                });
+                muteBtn.textContent = '🔊';
+                muteBtn.style.background = 'linear-gradient(135deg, #ff6b6b, #ff8c8c)';
+            }
+        }
+
+        // Actualizar estado del botón cuando se cambia desde JavaScript
+        function updateMuteButton() {
+            if (backgroundMusic.paused) {
+                muteBtn.textContent = '🔇';
+                muteBtn.style.background = 'linear-gradient(135deg, #888, #aaa)';
+                isMuted = true;
+            } else {
+                muteBtn.textContent = '🔊';
+                muteBtn.style.background = 'linear-gradient(135deg, #ff6b6b, #ff8c8c)';
+                isMuted = false;
+            }
+        }
     </script>
 </body>
 </html>
