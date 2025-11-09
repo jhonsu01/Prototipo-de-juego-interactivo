@@ -647,6 +647,16 @@
         <source src="jump.ogg" type="audio/ogg">
     </audio>
 
+    <!-- AUDIO DE PUNTOS -->
+    <audio id="pointsSound">
+        <source src="points.ogg" type="audio/ogg">
+    </audio>
+
+    <!-- AUDIO DE PÉRDIDA DE VIDAS -->
+    <audio id="livesSound">
+        <source src="lives.ogg" type="audio/ogg">
+    </audio>
+
     <!-- BOTÓN DE MUTE -->
     <button class="mute-btn" id="muteBtn" onclick="toggleMute()" title="Silenciar/Activar música">🔊</button>
 
@@ -1085,6 +1095,7 @@
                     c.element.classList.add('collected');
                     gameState.score += 10;
                     document.getElementById('score').textContent = gameState.score;
+                    playPointsSound();
                     setTimeout(() => {
                         c.element.remove();
                     }, 300);
@@ -1122,6 +1133,7 @@
         function loseLive() {
             gameState.gameRunning = false;
             gameState.lives--;
+            playLivesSound();
 
             if (gameState.lives <= 0) {
                 document.getElementById('gameScreen').style.display = 'none';
@@ -1314,6 +1326,24 @@
             jumpSound.currentTime = 0;
             jumpSound.play().catch(err => {
                 console.log('No se pudo reproducir el sonido de salto:', err);
+            });
+        }
+
+        // Reproducir sonido de recolección de puntos
+        const pointsSound = document.getElementById('pointsSound');
+        function playPointsSound() {
+            pointsSound.currentTime = 0;
+            pointsSound.play().catch(err => {
+                console.log('No se pudo reproducir el sonido de puntos:', err);
+            });
+        }
+
+        // Reproducir sonido de pérdida de vidas
+        const livesSound = document.getElementById('livesSound');
+        function playLivesSound() {
+            livesSound.currentTime = 0;
+            livesSound.play().catch(err => {
+                console.log('No se pudo reproducir el sonido de pérdida de vidas:', err);
             });
         }
     </script>
