@@ -365,6 +365,27 @@
             animation: coin-collected 0.3s ease-out forwards;
         }
 
+        .castle {
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #8B7355 0%, #D4A574 50%, #8B7355 100%);
+            border: 3px solid #654321;
+            z-index: 25;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            border-radius: 5px 5px 0 0;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.3);
+            animation: castle-glow 1.5s ease-in-out infinite;
+        }
+
+        @keyframes castle-glow {
+            0%, 100% { box-shadow: inset 0 2px 5px rgba(0,0,0,0.3), 0 0 10px rgba(255, 215, 0, 0.5); }
+            50% { box-shadow: inset 0 2px 5px rgba(0,0,0,0.3), 0 0 20px rgba(255, 215, 0, 0.8); }
+        }
+
         @keyframes coin-collected {
             to {
                 transform: translateY(-50px);
@@ -1219,6 +1240,15 @@
                 gameWorld.appendChild(coin);
             });
 
+            // Crear castillo como meta
+            const castle = document.createElement('div');
+            castle.className = 'castle';
+            castle.textContent = '🏰';
+            castle.style.left = (config.goalX - 40) + 'px';
+            castle.style.top = '350px';
+            castle.id = 'castle';
+            gameWorld.appendChild(castle);
+
             // Crear Mario
             gameState.marioX = 50;
             gameState.marioY = 400;
@@ -1352,7 +1382,16 @@
             });
 
             // Verificar si llegó al final
-            if (gameState.marioX + 60 >= config.goalX) {
+            // Detectar colisión con el castillo
+            const castleX = config.goalX - 40;
+            const castleWidth = 80;
+            const castleY = 350;
+            const castleHeight = 80;
+
+            if (gameState.marioX + 60 > castleX &&
+                gameState.marioX < castleX + castleWidth &&
+                gameState.marioY + 60 > castleY &&
+                gameState.marioY < castleY + castleHeight) {
                 gameState.gameRunning = false;
                 startQuiz();
                 return;
