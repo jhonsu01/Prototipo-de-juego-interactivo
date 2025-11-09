@@ -642,6 +642,11 @@
         <source src="song.ogg" type="audio/ogg">
     </audio>
 
+    <!-- AUDIO DE SALTO -->
+    <audio id="jumpSound">
+        <source src="jump.ogg" type="audio/ogg">
+    </audio>
+
     <!-- BOTÓN DE MUTE -->
     <button class="mute-btn" id="muteBtn" onclick="toggleMute()" title="Silenciar/Activar música">🔊</button>
 
@@ -1009,6 +1014,7 @@
                 physics.marioVelocityY = -physics.jumpPower;
                 physics.isJumping = true;
                 physics.isOnGround = false;
+                playJumpSound();
             }
 
             // Aplicar gravedad
@@ -1299,6 +1305,16 @@
                 muteBtn.style.background = 'linear-gradient(135deg, #ff6b6b, #ff8c8c)';
                 isMuted = false;
             }
+        }
+
+        // Reproducir sonido de salto
+        const jumpSound = document.getElementById('jumpSound');
+        function playJumpSound() {
+            // Reiniciar el sonido desde el principio cada vez que se toca
+            jumpSound.currentTime = 0;
+            jumpSound.play().catch(err => {
+                console.log('No se pudo reproducir el sonido de salto:', err);
+            });
         }
     </script>
 </body>
