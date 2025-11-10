@@ -1127,7 +1127,7 @@
                     { x: 1750, y: 500, w: 200, h: 30 }
                 ],
                 enemies: [
-                    { x: 800, y: 350, dirX: 1 }
+                    { x: 350, y: 400, dirX: 1 }
                 ],
                 coins: [
                     { x: 280, y: 430 },
@@ -1151,8 +1151,8 @@
                     { x: 1750, y: 500, w: 150, h: 30 }
                 ],
                 enemies: [
-                    { x: 600, y: 350, dirX: 1 },
-                    { x: 1300, y: 290, dirX: -1 }
+                    { x: 350, y: 350, dirX: 1 },
+                    { x: 1050, y: 300, dirX: -1 }
                 ],
                 coins: [
                     { x: 280, y: 430 },
@@ -1449,8 +1449,8 @@
                         e.y = p.y - 50;
                         e.velocityY = 0;
                         e.onGround = true;
-                        // Saltar automáticamente
-                        e.velocityY = -12;
+                        // Saltar automáticamente con velocidad controlada
+                        e.velocityY = -8;
                     }
                 });
 
