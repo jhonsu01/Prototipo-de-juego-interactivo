@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Políticas de Privacidad - AVENTURERO DEL SABER</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-color: #FF6B35;
+            --secondary-color: #004E89;
+            --accent-color: #F7B801;
+            --text-dark: #1a1a1a;
+            --text-light: #f0f0f0;
+            --bg-dark: #0d0d0d;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, var(--secondary-color) 100%);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* ===== NAVEGACIÓN ===== */
+        nav {
+            background: rgba(0, 0, 0, 0.9);
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        nav a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+        }
+
+        nav a:hover {
+            color: var(--accent-color);
+            background: rgba(255, 107, 53, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* ===== CONTENIDO PRINCIPAL ===== */
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        header {
+            background: linear-gradient(rgba(0, 78, 137, 0.9), rgba(255, 107, 53, 0.9)),
+                        url('fondo.jpg') center/cover no-repeat;
+            color: var(--text-light);
+            padding: 4rem 2rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+        }
+
+        header p {
+            font-size: 1.1rem;
+            color: var(--accent-color);
+        }
+
+        /* ===== SECCIONES ===== */
+        section {
+            background: white;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid var(--primary-color);
+        }
+
+        h2 {
+            color: var(--secondary-color);
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 0.5rem;
+        }
+
+        h3 {
+            color: var(--primary-color);
+            font-size: 1.3rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        h3:first-child {
+            margin-top: 0;
+        }
+
+        p {
+            color: #333;
+            margin-bottom: 1rem;
+            line-height: 1.8;
+        }
+
+        ul {
+            color: #333;
+            margin-left: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        li {
+            margin-bottom: 0.8rem;
+            line-height: 1.8;
+        }
+
+        .highlight {
+            background: rgba(247, 184, 1, 0.1);
+            padding: 1.5rem;
+            border-radius: 6px;
+            border-left: 4px solid var(--accent-color);
+            margin: 1.5rem 0;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: rgba(0, 0, 0, 0.95);
+            color: var(--text-light);
+            text-align: center;
+            padding: 2rem;
+            border-top: 2px solid var(--primary-color);
+            margin-top: 3rem;
+        }
+
+        footer p {
+            color: var(--text-light);
+            margin: 0.5rem 0;
+        }
+
+        footer a {
+            color: var(--accent-color);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8rem;
+            }
+
+            .container {
+                padding: 1.5rem 1rem;
+            }
+
+            section {
+                padding: 1.5rem;
+            }
+
+            h2 {
+                font-size: 1.4rem;
+            }
+
+            h3 {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ===== NAVEGACIÓN ===== -->
+    <nav>
+        <ul>
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="index.html#gameplay">Gameplay</a></li>
+            <li><a href="index.html#characters">Personajes</a></li>
+            <li><a href="index.html#demo">Jugar Ahora</a></li>
+            <li><a href="index.html#credits">Créditos</a></li>
+        </ul>
+    </nav>
+
+    <!-- ===== HEADER ===== -->
+    <header>
+        <h1>Políticas de Privacidad</h1>
+        <p>AVENTURERO DEL SABER - Protegemos tu privacidad</p>
+    </header>
+
+    <!-- ===== CONTENIDO PRINCIPAL ===== -->
+    <div class="container">
+
+        <!-- Sección: Introducción -->
+        <section>
+            <h2>Introducción</h2>
+            <p>
+                En <strong>AVENTURERO DEL SABER</strong>, tu privacidad es importante para nosotros. Esta política explica de forma clara y sencilla cómo recopilamos, usamos y protegemos tu información personal cuando utilizas nuestro videojuego interactivo.
+            </p>
+            <p>
+                Lee atentamente esta política. Si tienes preguntas, puedes contactarnos directamente.
+            </p>
+        </section>
+
+        <!-- Sección: Información que Recopilamos -->
+        <section>
+            <h2>¿Qué Información Recopilamos?</h2>
+
+            <h3>Información que proporciones voluntariamente:</h3>
+            <ul>
+                <li>Puntuaciones y resultados de juego</li>
+                <li>Progreso en los niveles</li>
+                <li>Datos de navegación dentro del juego</li>
+            </ul>
+
+            <h3>Información automática:</h3>
+            <ul>
+                <li>Tipo de dispositivo (móvil, tablet, computadora)</li>
+                <li>Navegador utilizado</li>
+                <li>Dirección IP (información anónima)</li>
+                <li>Fecha y hora de acceso</li>
+            </ul>
+
+            <div class="highlight">
+                <strong>Importante:</strong> No recopilamos ni solicitamos información personal como nombre, correo electrónico o datos de contacto a menos que sea estrictamente necesario y con tu consentimiento.
+            </div>
+        </section>
+
+        <!-- Sección: Cómo Usamos tu Información -->
+        <section>
+            <h2>¿Cómo Usamos tu Información?</h2>
+
+            <p>Utilizamos la información recopilada únicamente para:</p>
+            <ul>
+                <li><strong>Mejorar tu experiencia:</strong> Personalizar el contenido del juego según tu progreso</li>
+                <li><strong>Análisis y estadísticas:</strong> Entender cómo juegas para mejorar la calidad</li>
+                <li><strong>Mantenimiento técnico:</strong> Garantizar que el juego funcione correctamente</li>
+                <li><strong>Seguridad:</strong> Prevenir accesos no autorizados y fraude</li>
+            </ul>
+
+            <p>
+                <strong>No vendemos, compartimos ni alquilamos tu información personal a terceros.</strong>
+            </p>
+        </section>
+
+        <!-- Sección: Seguridad -->
+        <section>
+            <h2>Seguridad de tu Información</h2>
+
+            <p>
+                Implementamos medidas técnicas y organizacionales para proteger tu información contra acceso no autorizado, alteración, divulgación o destrucción.
+            </p>
+
+            <p>
+                Si bien nos esforzamos por proteger tu información, ningún sistema de seguridad es completamente seguro. Por eso te recomendamos:
+            </p>
+            <ul>
+                <li>Usar contraseñas fuertes</li>
+                <li>No compartir tus credenciales de acceso</li>
+                <li>Cerrar sesión después de jugar</li>
+            </ul>
+        </section>
+
+        <!-- Sección: Cookies y Tecnología Similar -->
+        <section>
+            <h2>Cookies y Tecnología Similar</h2>
+
+            <p>
+                Utilizamos cookies (pequeños archivos almacenados en tu dispositivo) para:
+            </p>
+            <ul>
+                <li>Recordar tu progreso en el juego</li>
+                <li>Mejorar tu experiencia de usuario</li>
+                <li>Análisis de uso</li>
+            </ul>
+
+            <p>
+                Puedes desactivar las cookies en la configuración de tu navegador si lo deseas. Sin embargo, esto puede afectar la funcionalidad del juego.
+            </p>
+        </section>
+
+        <!-- Sección: Retención de Datos -->
+        <section>
+            <h2>¿Cuánto Tiempo Guardamos tu Información?</h2>
+
+            <p>
+                Guardamos tu información mientras:
+            </p>
+            <ul>
+                <li>Tengas una cuenta activa en el juego</li>
+                <li>Sea necesario para proporcionar el servicio</li>
+                <li>Lo requiera la ley o regulaciones</li>
+            </ul>
+
+            <p>
+                Si deseas eliminar tu información, contacta con el equipo de desarrollo. Eliminaremos tus datos de acuerdo con nuestras políticas de retención.
+            </p>
+        </section>
+
+        <!-- Sección: Derechos del Usuario -->
+        <section>
+            <h2>Tus Derechos</h2>
+
+            <p>Tienes derecho a:</p>
+            <ul>
+                <li><strong>Acceso:</strong> Solicitar copia de tu información personal</li>
+                <li><strong>Corrección:</strong> Solicitar que corrijanios datos incorrectos</li>
+                <li><strong>Eliminación:</strong> Solicitar la eliminación de tu información</li>
+                <li><strong>Portabilidad:</strong> Recibir tu información en formato legible</li>
+                <li><strong>Objeción:</strong> Objetar ciertos usos de tu información</li>
+            </ul>
+
+            <p>
+                Para ejercer estos derechos, contacta directamente al equipo de desarrollo.
+            </p>
+        </section>
+
+        <!-- Sección: Cambios a la Política -->
+        <section>
+            <h2>Cambios a esta Política</h2>
+
+            <p>
+                Podemos actualizar esta política de privacidad en cualquier momento. Te notificaremos de cambios significativos publicando una versión actualizada en este sitio web.
+            </p>
+
+            <p>
+                Tu continuación del uso del juego después de cualquier cambio significa que aceptas los nuevos términos.
+            </p>
+        </section>
+
+        <!-- Sección: Contacto -->
+        <section>
+            <h2>¿Preguntas o Inquietudes?</h2>
+
+            <p>
+                Si tienes preguntas sobre esta política de privacidad o sobre cómo manejamos tu información, contáctanos:
+            </p>
+
+            <div class="highlight">
+                <p><strong>AVENTURERO DEL SABER</strong></p>
+                <p>Ingeniería Multimedia - Grupo 213030_52</p>
+                <p>UNAD - Universidad Nacional Abierta y a Distancia</p>
+                <p>Año: 2025</p>
+                <p><a href="index.html">Volver al sitio principal</a></p>
+            </div>
+        </section>
+
+        <!-- Sección: Aceptación -->
+        <section style="background: linear-gradient(135deg, rgba(247, 184, 1, 0.1), rgba(255, 107, 53, 0.1)); border-left-color: var(--accent-color);">
+            <h2>Aceptación de Políticas</h2>
+            <p>
+                Al utilizar <strong>AVENTURERO DEL SABER</strong>, aceptas esta política de privacidad. Si no estás de acuerdo con alguna parte, por favor no utilices el juego.
+            </p>
+            <p>
+                <strong>Última actualización:</strong> 10 de noviembre de 2025
+            </p>
+        </section>
+
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <footer>
+        <p>&copy; 2025 AVENTURERO DEL SABER - Todos los derechos reservados</p>
+        <p>Ingeniería Multimedia | Grupo 213030_52 | UNAD</p>
+        <p><a href="index.html">Volver a Inicio</a> | <a href="privacy-policy.html">Políticas de Privacidad</a></p>
+    </footer>
+
+    <script>
+        // Animación suave del scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
