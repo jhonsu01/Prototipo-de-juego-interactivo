@@ -398,13 +398,26 @@
            ========================================== */
         .lava {
             position: absolute;
-            background: linear-gradient(to bottom, #ff4500, #8B0000);
-            animation: lava-wave 1s ease-in-out infinite;
+            background: linear-gradient(to bottom, #ff6347, #8B0000);
+            animation: lava-wave 0.8s ease-in-out infinite;
+            border-radius: 5px;
+            border: 2px solid #FF4500;
+            box-shadow: 0 0 15px rgba(255, 69, 0, 0.8), inset 0 0 10px rgba(255, 99, 71, 0.5);
         }
 
         @keyframes lava-wave {
-            0%, 100% { background-position: 0 0; }
-            50% { background-position: 20px 0; }
+            0% {
+                transform: scaleY(1);
+                box-shadow: 0 0 15px rgba(255, 69, 0, 0.8), inset 0 0 10px rgba(255, 99, 71, 0.5);
+            }
+            50% {
+                transform: scaleY(1.1);
+                box-shadow: 0 0 25px rgba(255, 99, 71, 1), inset 0 0 15px rgba(255, 140, 0, 0.8);
+            }
+            100% {
+                transform: scaleY(1);
+                box-shadow: 0 0 15px rgba(255, 69, 0, 0.8), inset 0 0 10px rgba(255, 99, 71, 0.5);
+            }
         }
 
         /* ==========================================
@@ -1107,19 +1120,23 @@
                 goalX: 1800,
                 platforms: [
                     { x: 0, y: 500, w: 200, h: 30 },
-                    { x: 350, y: 480, w: 200, h: 30 },
-                    { x: 700, y: 460, w: 200, h: 30 },
-                    { x: 1050, y: 440, w: 200, h: 30 },
-                    { x: 1400, y: 420, w: 200, h: 30 },
+                    { x: 350, y: 450, w: 200, h: 30 },
+                    { x: 700, y: 380, w: 200, h: 30 },
+                    { x: 1050, y: 420, w: 200, h: 30 },
+                    { x: 1400, y: 340, w: 200, h: 30 },
                     { x: 1750, y: 500, w: 200, h: 30 }
                 ],
                 enemies: [
-                    { x: 800, y: 400, dirX: 1 }
+                    { x: 800, y: 350, dirX: 1 }
                 ],
                 coins: [
                     { x: 280, y: 430 },
-                    { x: 800, y: 370 },
-                    { x: 1400, y: 330 }
+                    { x: 800, y: 300 },
+                    { x: 1400, y: 260 }
+                ],
+                lava: [
+                    { x: 550, y: 480, w: 120, h: 40 },
+                    { x: 1200, y: 460, w: 120, h: 40 }
                 ]
             },
             2: {
@@ -1127,22 +1144,26 @@
                 goalX: 1800,
                 platforms: [
                     { x: 0, y: 500, w: 150, h: 30 },
-                    { x: 350, y: 480, w: 180, h: 30 },
-                    { x: 700, y: 460, w: 180, h: 30 },
-                    { x: 1050, y: 440, w: 180, h: 30 },
+                    { x: 350, y: 400, w: 180, h: 30 },
+                    { x: 700, y: 480, w: 180, h: 30 },
+                    { x: 1050, y: 350, w: 180, h: 30 },
                     { x: 1400, y: 420, w: 180, h: 30 },
                     { x: 1750, y: 500, w: 150, h: 30 }
                 ],
                 enemies: [
-                    { x: 600, y: 400, dirX: 1 },
-                    { x: 1300, y: 340, dirX: -1 }
+                    { x: 600, y: 350, dirX: 1 },
+                    { x: 1300, y: 290, dirX: -1 }
                 ],
                 coins: [
                     { x: 280, y: 430 },
-                    { x: 800, y: 370 },
+                    { x: 800, y: 380 },
                     { x: 1400, y: 330 }
                 ],
-                lava: []
+                lava: [
+                    { x: 450, y: 470, w: 120, h: 40 },
+                    { x: 900, y: 510, w: 120, h: 40 },
+                    { x: 1350, y: 470, w: 120, h: 40 }
+                ]
             }
         };
 
