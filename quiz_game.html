@@ -996,6 +996,10 @@
     <!-- INDICADORES DE ESQUINA (VIDAS Y PUNTOS) -->
     <div class="top-indicators" id="topIndicators">
         <div class="indicator">
+            <span class="indicator-icon">🏰</span>
+            <span id="topLevel">1</span>
+        </div>
+        <div class="indicator">
             <span class="indicator-icon">❤️</span>
             <span id="topLives">3</span>
         </div>
@@ -1267,9 +1271,11 @@
         // ==========================================
         function updateHUDValues() {
             // Actualizar el HUD antiguo (en la parte inferior)
+            document.getElementById('level').textContent = gameState.currentLevel;
             document.getElementById('lives').textContent = gameState.lives;
             document.getElementById('score').textContent = gameState.score;
             // Actualizar los nuevos indicadores de esquina
+            document.getElementById('topLevel').textContent = gameState.currentLevel;
             document.getElementById('topLives').textContent = gameState.lives;
             document.getElementById('topScore').textContent = gameState.score;
         }
