@@ -1027,6 +1027,11 @@
         <source src="lives.ogg" type="audio/ogg">
     </audio>
 
+    <!-- AUDIO DE VIDA EXTRA -->
+    <audio id="extraSound">
+        <source src="extra.ogg" type="audio/ogg">
+    </audio>
+
     <!-- INDICADORES DE ESQUINA (VIDAS Y PUNTOS) -->
     <div class="top-indicators" id="topIndicators">
         <div class="indicator">
@@ -1160,7 +1165,8 @@
             coins: [],
             enemies: [],
             platforms: [],
-            gameOverFlag: false
+            gameOverFlag: false,
+            extraLifeGiven: false
         };
 
         // Teclas presionadas
@@ -1363,6 +1369,7 @@
             gameState.currentLevel = levelNum;
             gameState.gameRunning = true;
             gameState.gameOverFlag = false;
+            gameState.extraLifeGiven = false;
 
             const config = levelConfig[levelNum];
             const gameWorld = document.getElementById('gameWorld');
@@ -1548,6 +1555,7 @@
                     c.element.classList.add('collected');
                     gameState.score += 10;
                     updateHUDValues();
+                    checkExtraLife();
                     playPointsSound();
                     setTimeout(() => {
                         c.element.remove();
@@ -1909,6 +1917,25 @@
             livesSound.play().catch(err => {
                 console.log('No se pudo reproducir el sonido de pérdida de vidas:', err);
             });
+        }
+
+        // Reproducir sonido de vida extra
+        const extraSound = document.getElementById('extraSound');
+        function playExtraSound() {
+            extraSound.currentTime = 0;
+            extraSound.play().catch(err => {
+                console.log('No se pudo reproducir el sonido de vida extra:', err);
+            });
+        }
+
+        // Dar vida extra cuando se alcanzan 30 puntos
+        function checkExtraLife() {
+            if (gameState.score >= 30 && !gameState.extraLifeGiven) {
+                gameState.lives++;
+                gameState.extraLifeGiven = true;
+                updateHUDValues();
+                playExtraSound();
+            }
         }
     </script>
 </body>
