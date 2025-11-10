@@ -1932,6 +1932,7 @@
         function checkExtraLife() {
             if (gameState.score >= 30 && !gameState.extraLifeGiven) {
                 gameState.lives++;
+                gameState.score -= 30;
                 gameState.extraLifeGiven = true;
                 updateHUDValues();
                 playExtraSound();
