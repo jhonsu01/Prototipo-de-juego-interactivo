@@ -1127,7 +1127,9 @@
                     { x: 1750, y: 500, w: 200, h: 30 }
                 ],
                 enemies: [
-                    { x: 350, y: 400, dirX: 1 }
+                    { x: 350, y: 400, dirX: 1 },
+                    { x: 700, y: 330, dirX: -1 },
+                    { x: 1400, y: 290, dirX: 1 }
                 ],
                 coins: [
                     { x: 280, y: 430 },
@@ -1152,7 +1154,9 @@
                 ],
                 enemies: [
                     { x: 350, y: 350, dirX: 1 },
-                    { x: 1050, y: 300, dirX: -1 }
+                    { x: 700, y: 430, dirX: -1 },
+                    { x: 1050, y: 300, dirX: 1 },
+                    { x: 1400, y: 370, dirX: -1 }
                 ],
                 coins: [
                     { x: 280, y: 430 },
@@ -1247,14 +1251,13 @@
             }
 
             // Crear enemigos
-            gameState.enemies = config.enemies.map(e => ({...e, element: null, velocityY: 0, velocityX: e.dirX * 2}));
+            gameState.enemies = config.enemies.map(e => ({...e, element: null, velocityX: e.dirX * 2}));
             gameState.enemies.forEach(e => {
                 const enemy = document.createElement('div');
                 enemy.className = 'enemy';
                 enemy.style.left = e.x + 'px';
                 enemy.style.top = e.y + 'px';
                 e.element = enemy;
-                e.onGround = false;
                 gameWorld.appendChild(enemy);
             });
 
@@ -1426,35 +1429,12 @@
                 return;
             }
 
-            // Mover enemigos con física
+            // Mover enemigos horizontalmente
             gameState.enemies.forEach(e => {
-                // Movimiento horizontal
+                // Movimiento horizontal solamente
                 e.x += e.velocityX;
 
-                // Aplicar gravedad
-                e.velocityY += physics.gravity;
-                if (e.velocityY > physics.maxFallSpeed) {
-                    e.velocityY = physics.maxFallSpeed;
-                }
-                e.y += e.velocityY;
-
-                // Colisiones con plataformas
-                e.onGround = false;
-                gameState.platforms.forEach(p => {
-                    if (e.x + 50 > p.x &&
-                        e.x < p.x + p.w &&
-                        e.y + 50 >= p.y &&
-                        e.y + 50 <= p.y + p.h + 5 &&
-                        e.velocityY >= 0) {
-                        e.y = p.y - 50;
-                        e.velocityY = 0;
-                        e.onGround = true;
-                        // Saltar automáticamente con velocidad controlada
-                        e.velocityY = -8;
-                    }
-                });
-
-                // Invertir dirección al llegar a los límites
+                // Invertir dirección al llegar a los límites del nivel
                 if (e.x < 0 || e.x > 1800 - 50) {
                     e.velocityX *= -1;
                     e.dirX *= -1;
@@ -1462,7 +1442,6 @@
 
                 // Actualizar posición en DOM
                 e.element.style.left = e.x + 'px';
-                e.element.style.top = e.y + 'px';
             });
 
             // Actualizar posición de Mario
