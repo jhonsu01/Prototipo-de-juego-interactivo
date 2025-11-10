@@ -640,13 +640,45 @@
         }
 
         /* ==========================================
+           INDICADORES DE ESQUINA (VIDAS Y PUNTOS)
+           ========================================== */
+        .top-indicators {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            z-index: 9998;
+            font-weight: bold;
+            font-size: 16px;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+        }
+
+        .indicator {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px 12px;
+            border-radius: 20px;
+            border: 2px solid #ffd93d;
+            backdrop-filter: blur(5px);
+        }
+
+        .indicator-icon {
+            font-size: 20px;
+        }
+
+        /* ==========================================
            BOTÓN DE MUTE (AUDIO)
            Controla el silenciamiento de la música
            ========================================== */
         .mute-btn {
             position: fixed;
             top: 20px;
-            right: 20px;
+            right: 80px;
             width: 50px;
             height: 50px;
             border-radius: 50%;
@@ -737,6 +769,25 @@
            Adaptación para dispositivos móviles
            ========================================== */
         @media (max-width: 768px) {
+            .top-indicators {
+                font-size: 15px;
+                gap: 12px;
+                right: 15px;
+                top: 15px;
+            }
+
+            .indicator {
+                padding: 7px 11px;
+            }
+
+            .indicator-icon {
+                font-size: 18px;
+            }
+
+            .mute-btn {
+                right: 75px;
+            }
+
             /* Estilos responsive para el menú */
             .menu-title {
                 font-size: 48px;
@@ -824,6 +875,29 @@
 
         /* Estilos para pantallas extra pequeñas */
         @media (max-width: 480px) {
+            .top-indicators {
+                font-size: 14px;
+                gap: 10px;
+                right: 10px;
+                top: 10px;
+            }
+
+            .indicator {
+                padding: 6px 10px;
+                border: 1px solid #ffd93d;
+            }
+
+            .indicator-icon {
+                font-size: 16px;
+            }
+
+            .mute-btn {
+                right: 70px;
+                width: 45px;
+                height: 45px;
+                font-size: 20px;
+            }
+
             .instructions-screen {
                 padding: 15px;
             }
@@ -918,6 +992,18 @@
     <audio id="livesSound">
         <source src="lives.ogg" type="audio/ogg">
     </audio>
+
+    <!-- INDICADORES DE ESQUINA (VIDAS Y PUNTOS) -->
+    <div class="top-indicators" id="topIndicators">
+        <div class="indicator">
+            <span class="indicator-icon">❤️</span>
+            <span id="topLives">3</span>
+        </div>
+        <div class="indicator">
+            <span class="indicator-icon">💰</span>
+            <span id="topScore">0</span>
+        </div>
+    </div>
 
     <!-- BOTÓN DE MUTE -->
     <button class="mute-btn" id="muteBtn" onclick="toggleMute()" title="Silenciar/Activar música">🔊</button>
@@ -1177,6 +1263,18 @@
         };
 
         // ==========================================
+        // ACTUALIZAR VALORES DEL HUD
+        // ==========================================
+        function updateHUDValues() {
+            // Actualizar el HUD antiguo (en la parte inferior)
+            document.getElementById('lives').textContent = gameState.lives;
+            document.getElementById('score').textContent = gameState.score;
+            // Actualizar los nuevos indicadores de esquina
+            document.getElementById('topLives').textContent = gameState.lives;
+            document.getElementById('topScore').textContent = gameState.score;
+        }
+
+        // ==========================================
         // FUNCIONES DE PANTALLA
         // ==========================================
         function showInstructions() {
@@ -1308,8 +1406,7 @@
 
             // Actualizar HUD
             document.getElementById('level').textContent = levelNum;
-            document.getElementById('lives').textContent = gameState.lives;
-            document.getElementById('score').textContent = gameState.score;
+            updateHUDValues();
 
             document.getElementById('gameScreen').style.display = 'flex';
 
@@ -1410,7 +1507,7 @@
                     c.collected = true;
                     c.element.classList.add('collected');
                     gameState.score += 10;
-                    document.getElementById('score').textContent = gameState.score;
+                    updateHUDValues();
                     playPointsSound();
                     setTimeout(() => {
                         c.element.remove();
@@ -1474,7 +1571,7 @@
                 document.getElementById('gameoverScreen').style.display = 'flex';
                 gameState.gameOverFlag = true;
             } else {
-                document.getElementById('lives').textContent = gameState.lives;
+                updateHUDValues();
                 setTimeout(() => {
                     loadLevel(gameState.currentLevel);
                 }, 1000);
@@ -1568,7 +1665,7 @@
                     document.getElementById('gameoverScreen').style.display = 'flex';
                 } else {
                     document.getElementById('quizScreen').style.display = 'none';
-                    document.getElementById('lives').textContent = gameState.lives;
+                    updateHUDValues();
                     setTimeout(() => {
                         document.getElementById('gameScreen').style.display = 'flex';
                         loadLevel(gameState.currentLevel);
