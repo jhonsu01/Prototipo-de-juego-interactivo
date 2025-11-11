@@ -644,11 +644,12 @@
            ========================================== */
         .top-indicators {
             position: fixed;
-            top: 20px;
+            top: 60px;
             right: 20px;
             display: flex;
-            gap: 15px;
-            align-items: center;
+            flex-direction: column;
+            gap: 10px;
+            align-items: flex-end;
             z-index: 9998;
             font-weight: bold;
             font-size: 16px;
@@ -677,8 +678,9 @@
            ========================================== */
         .mute-btn {
             position: fixed;
-            top: 100px;
+            top: 50%;
             right: 20px;
+            transform: translateY(-50%);
             width: 50px;
             height: 50px;
             border-radius: 50%;
@@ -695,13 +697,13 @@
         }
 
         .mute-btn:hover {
-            transform: scale(1.1);
+            transform: translateY(-50%) scale(1.1);
             background: linear-gradient(135deg, #ff8c8c, #ffb3b3);
             box-shadow: 0 6px 20px rgba(255, 107, 107, 0.5);
         }
 
         .mute-btn:active {
-            transform: scale(0.95);
+            transform: translateY(-50%) scale(0.95);
         }
 
         /* ==========================================
@@ -771,9 +773,9 @@
         @media (max-width: 768px) {
             .top-indicators {
                 font-size: 15px;
-                gap: 12px;
+                gap: 8px;
                 right: 15px;
-                top: 15px;
+                top: 55px;
             }
 
             .indicator {
@@ -785,7 +787,7 @@
             }
 
             .mute-btn {
-                top: 95px;
+                right: 15px;
             }
 
             /* Estilos responsive para el menú */
@@ -814,7 +816,6 @@
                 width: 40px;
                 height: 40px;
                 font-size: 20px;
-                top: 10px;
                 right: 10px;
             }
 
@@ -877,9 +878,9 @@
         @media (max-width: 480px) {
             .top-indicators {
                 font-size: 14px;
-                gap: 10px;
+                gap: 8px;
                 right: 10px;
-                top: 10px;
+                top: 50px;
             }
 
             .indicator {
@@ -892,7 +893,6 @@
             }
 
             .mute-btn {
-                top: 115px;
                 width: 45px;
                 height: 45px;
                 font-size: 20px;
@@ -962,7 +962,6 @@
                 width: 35px;
                 height: 35px;
                 font-size: 18px;
-                top: 8px;
                 right: 8px;
             }
 
