@@ -1,0 +1,1197 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mario Bros Quiz Game</title>
+    <style>
+        /* ==========================================
+           ESTILOS GLOBALES
+           ========================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #1a1a2e;
+            color: white;
+            overflow: hidden;
+        }
+
+        /* ==========================================
+           CONTENEDOR PRINCIPAL
+           ========================================== */
+        .game-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* ==========================================
+           PANTALLA DE MENÚ
+           ========================================== */
+        .menu-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .menu-title {
+            font-size: 72px;
+            color: #ff6b6b;
+            text-shadow: 3px 3px 0px #000;
+            margin-bottom: 20px;
+            animation: bounce-title 1s ease-in-out infinite;
+            letter-spacing: 3px;
+        }
+
+        .menu-subtitle {
+            font-size: 28px;
+            color: #ffd93d;
+            text-shadow: 2px 2px 0px #000;
+            margin-bottom: 50px;
+            letter-spacing: 2px;
+        }
+
+        .menu-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .menu-btn {
+            font-size: 24px;
+            padding: 20px 40px;
+            border: 3px solid #ffd93d;
+            background: linear-gradient(45deg, #ff6b6b, #ff8c8c);
+            color: white;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            text-shadow: 2px 2px 0px #000;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .menu-btn:hover {
+            transform: scale(1.1);
+            background: linear-gradient(45deg, #ff8c8c, #ffb3b3);
+            box-shadow: 0 0 20px rgba(255, 107, 107, 0.5);
+        }
+
+        @keyframes bounce-title {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        /* ==========================================
+           PANTALLA DE INSTRUCCIONES
+           ========================================== */
+        .instructions-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 40px;
+        }
+
+        .instructions-content {
+            background: rgba(0, 0, 0, 0.7);
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 800px;
+            border: 4px solid #ffd93d;
+        }
+
+        .instructions-title {
+            font-size: 48px;
+            color: #ffd93d;
+            text-shadow: 2px 2px 0px #000;
+            margin-bottom: 30px;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        .instruction-section {
+            margin-bottom: 25px;
+            font-size: 18px;
+            line-height: 1.8;
+        }
+
+        .instruction-section h3 {
+            color: #ff6b6b;
+            margin-bottom: 10px;
+            font-size: 22px;
+        }
+
+        .instruction-section p {
+            color: #e0e0e0;
+            margin-bottom: 8px;
+        }
+
+        .back-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ff8c8c);
+            color: white;
+            border: 3px solid #ffd93d;
+            padding: 15px 30px;
+            font-size: 18px;
+            cursor: pointer;
+            border-radius: 10px;
+            margin-top: 30px;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .back-btn:hover {
+            transform: scale(1.05);
+            background: linear-gradient(45deg, #ff8c8c, #ffb3b3);
+        }
+
+        /* ==========================================
+           PANTALLA DEL JUEGO
+           ========================================== */
+        .game-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: none;
+            flex-direction: column;
+            z-index: 500;
+        }
+
+        .game-world {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(to bottom, #87CEEB 0%, #E0F6FF 50%, #228B22 100%);
+        }
+
+        .game-hud {
+            background: #2c3e50;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 3px solid #ffd93d;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .hud-item {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .lives-indicator {
+            color: #ff6b6b;
+        }
+
+        .level-indicator {
+            color: #ffd93d;
+        }
+
+        .score-indicator {
+            color: #6bff6b;
+        }
+
+        /* ==========================================
+           MARIO (JUGADOR)
+           ========================================== */
+        .mario {
+            position: absolute;
+            width: 32px;
+            height: 40px;
+            background: #ff0000;
+            border-radius: 5px 5px 2px 2px;
+            z-index: 100;
+        }
+
+        .mario::before {
+            content: '';
+            position: absolute;
+            top: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 18px;
+            background: #ffdbac;
+            border-radius: 50%;
+            border: 2px solid #ff0000;
+        }
+
+        .mario::after {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 24px;
+            height: 16px;
+            background: #0066ff;
+            border-radius: 3px;
+        }
+
+        /* ==========================================
+           PLATAFORMAS
+           ========================================== */
+        .platform {
+            position: absolute;
+            background: #8B4513;
+            border: 2px solid #654321;
+            border-radius: 5px;
+        }
+
+        .platform::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 20px,
+                rgba(0,0,0,0.2) 20px,
+                rgba(0,0,0,0.2) 21px
+            );
+            border-radius: 5px;
+        }
+
+        /* ==========================================
+           TUBERÍAS
+           ========================================== */
+        .pipe {
+            position: absolute;
+            background: #228B22;
+            border: 3px solid #1a6b1a;
+            border-radius: 50% 50% 0 0;
+        }
+
+        /* ==========================================
+           ENEMIGOS (GOOMBAS)
+           ========================================== */
+        .enemy {
+            position: absolute;
+            width: 32px;
+            height: 26px;
+            background: #8B6914;
+            border-radius: 50% 50% 30% 30%;
+            border: 2px solid #654321;
+            z-index: 50;
+        }
+
+        .enemy::before {
+            content: '';
+            position: absolute;
+            top: 5px;
+            left: 8px;
+            width: 6px;
+            height: 6px;
+            background: black;
+            border-radius: 50%;
+        }
+
+        .enemy::after {
+            content: '';
+            position: absolute;
+            top: 5px;
+            right: 8px;
+            width: 6px;
+            height: 6px;
+            background: black;
+            border-radius: 50%;
+        }
+
+        /* ==========================================
+           MONEDAS
+           ========================================== */
+        .coin {
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background: #ffd700;
+            border-radius: 50%;
+            border: 2px solid #ffed4e;
+            z-index: 30;
+            animation: coin-spin 0.6s linear infinite;
+        }
+
+        @keyframes coin-spin {
+            0%, 100% { transform: rotateZ(0deg) scale(1); }
+            50% { transform: rotateZ(180deg) scale(0.8); }
+        }
+
+        .coin.collected {
+            animation: coin-collected 0.3s ease-out forwards;
+        }
+
+        @keyframes coin-collected {
+            to {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+        }
+
+        /* ==========================================
+           LAVA
+           ========================================== */
+        .lava {
+            position: absolute;
+            background: linear-gradient(to bottom, #ff4500, #8B0000);
+            animation: lava-wave 1s ease-in-out infinite;
+        }
+
+        @keyframes lava-wave {
+            0%, 100% { background-position: 0 0; }
+            50% { background-position: 20px 0; }
+        }
+
+        /* ==========================================
+           PANTALLA DE QUIZ
+           ========================================== */
+        .quiz-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            padding: 40px;
+        }
+
+        .quiz-container {
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            padding: 50px;
+            border-radius: 20px;
+            border: 4px solid #ffd93d;
+            max-width: 700px;
+            width: 100%;
+        }
+
+        .quiz-title {
+            font-size: 36px;
+            color: #ffd93d;
+            text-shadow: 2px 2px 0px #000;
+            margin-bottom: 10px;
+            text-align: center;
+            letter-spacing: 2px;
+        }
+
+        .quiz-subtitle {
+            font-size: 18px;
+            color: #e0e0e0;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .quiz-question {
+            font-size: 24px;
+            color: #ffffff;
+            margin-bottom: 30px;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        .quiz-options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .quiz-option {
+            background: #3498db;
+            color: white;
+            border: 3px solid #2980b9;
+            padding: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .quiz-option:hover {
+            background: #2980b9;
+            transform: scale(1.05);
+        }
+
+        .quiz-option.correct {
+            background: #27ae60;
+            border-color: #1e8449;
+            animation: pulse 0.6s ease;
+        }
+
+        .quiz-option.incorrect {
+            background: #e74c3c;
+            border-color: #c0392b;
+            animation: shake 0.6s ease;
+        }
+
+        .quiz-option.disabled {
+            cursor: not-allowed;
+        }
+
+        .quiz-progress {
+            font-size: 20px;
+            color: #ffd93d;
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+        }
+
+        /* ==========================================
+           PANTALLA DE VICTORIA
+           ========================================== */
+        .victory-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #ffd93d, #ff6b6b);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .victory-content {
+            text-align: center;
+        }
+
+        .victory-title {
+            font-size: 72px;
+            color: white;
+            text-shadow: 3px 3px 0px #000;
+            margin-bottom: 20px;
+            animation: bounce-title 1s ease-in-out infinite;
+        }
+
+        .victory-message {
+            font-size: 28px;
+            color: #2c3e50;
+            text-shadow: 2px 2px 0px rgba(255,255,255,0.5);
+            margin-bottom: 40px;
+        }
+
+        .victory-btn {
+            font-size: 24px;
+            padding: 20px 40px;
+            border: 3px solid #2c3e50;
+            background: #ff6b6b;
+            color: white;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            text-shadow: 2px 2px 0px #000;
+            font-weight: bold;
+        }
+
+        .victory-btn:hover {
+            transform: scale(1.1);
+            background: #ff8c8c;
+        }
+
+        /* ==========================================
+           PANTALLA DE GAME OVER
+           ========================================== */
+        .gameover-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #000000, #333333);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+        }
+
+        .gameover-content {
+            text-align: center;
+        }
+
+        .gameover-title {
+            font-size: 64px;
+            color: #ff6b6b;
+            text-shadow: 3px 3px 0px #000;
+            margin-bottom: 20px;
+        }
+
+        .gameover-message {
+            font-size: 28px;
+            color: #ffffff;
+            margin-bottom: 40px;
+        }
+
+        .gameover-btn {
+            font-size: 24px;
+            padding: 20px 40px;
+            border: 3px solid #ff6b6b;
+            background: #ff6b6b;
+            color: white;
+            cursor: pointer;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            text-shadow: 2px 2px 0px #000;
+            font-weight: bold;
+            margin: 10px;
+        }
+
+        .gameover-btn:hover {
+            transform: scale(1.1);
+            background: #ff8c8c;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <!-- MENÚ PRINCIPAL -->
+        <div class="menu-screen" id="menuScreen">
+            <h1 class="menu-title">🍄 MARIO QUIZ 🍄</h1>
+            <p class="menu-subtitle">¡Juego Educativo!</p>
+            <div class="menu-buttons">
+                <button class="menu-btn" onclick="startGame()">🎮 JUGAR</button>
+                <button class="menu-btn" onclick="showInstructions()">📖 INSTRUCCIONES</button>
+            </div>
+        </div>
+
+        <!-- PANTALLA DE INSTRUCCIONES -->
+        <div class="instructions-screen" id="instructionsScreen">
+            <div class="instructions-content">
+                <h1 class="instructions-title">📖 INSTRUCCIONES</h1>
+
+                <div class="instruction-section">
+                    <h3>🎮 CONTROLES</h3>
+                    <p><strong>↑ Flecha Arriba o ESPACIO</strong> - Saltar</p>
+                    <p><strong>← Flecha Izquierda o A</strong> - Mover a la izquierda</p>
+                    <p><strong>→ Flecha Derecha o D</strong> - Mover a la derecha</p>
+                </div>
+
+                <div class="instruction-section">
+                    <h3>🎯 OBJETIVOS</h3>
+                    <p>• Llega al final de cada nivel para avanzar</p>
+                    <p>• Recoge monedas para ganar puntos (+10 puntos)</p>
+                    <p>• Evita a los enemigos (Goombas) - ¡Te restan 1 vida!</p>
+                    <p>• ¡Cuidado con la lava! Pierde una vida al caer</p>
+                </div>
+
+                <div class="instruction-section">
+                    <h3>⭐ CUESTIONARIOS</h3>
+                    <p>• Al terminar cada nivel, responde 2 preguntas</p>
+                    <p>• Debes responder ambas correctamente para pasar</p>
+                    <p>• Si fallas, pierdes una vida e intentas de nuevo</p>
+                </div>
+
+                <div class="instruction-section">
+                    <h3>📊 NIVELES</h3>
+                    <p><strong>Nivel 1:</strong> El Castillo de Peach - Dificultad Media</p>
+                    <p><strong>Nivel 2:</strong> Fortaleza de Bowser - Dificultad Alta</p>
+                </div>
+
+                <button class="back-btn" onclick="backToMenu()">← VOLVER AL MENÚ</button>
+            </div>
+        </div>
+
+        <!-- PANTALLA DEL JUEGO -->
+        <div class="game-screen" id="gameScreen">
+            <div class="game-world" id="gameWorld"></div>
+            <div class="game-hud">
+                <div class="hud-item lives-indicator">❤️ Vidas: <span id="lives">3</span></div>
+                <div class="hud-item level-indicator">🏰 Nivel: <span id="level">1</span></div>
+                <div class="hud-item score-indicator">💰 Puntos: <span id="score">0</span></div>
+            </div>
+        </div>
+
+        <!-- PANTALLA DE QUIZ -->
+        <div class="quiz-screen" id="quizScreen">
+            <div class="quiz-container">
+                <h2 class="quiz-title">⭐ CUESTIONARIO ⭐</h2>
+                <p class="quiz-subtitle" id="quizLevel">Nivel 1</p>
+                <div class="quiz-question" id="quizQuestion"></div>
+                <div class="quiz-options" id="quizOptions"></div>
+                <div class="quiz-progress" id="quizProgress"></div>
+            </div>
+        </div>
+
+        <!-- PANTALLA DE VICTORIA -->
+        <div class="victory-screen" id="victoryScreen">
+            <div class="victory-content">
+                <h1 class="victory-title">🎉 ¡GANASTE! 🎉</h1>
+                <p class="victory-message">¡Completaste todos los niveles!</p>
+                <button class="victory-btn" onclick="goToMenu()">🏠 IR AL MENÚ</button>
+            </div>
+        </div>
+
+        <!-- PANTALLA DE GAME OVER -->
+        <div class="gameover-screen" id="gameoverScreen">
+            <div class="gameover-content">
+                <h1 class="gameover-title">💀 GAME OVER 💀</h1>
+                <p class="gameover-message">¡Se acabaron las vidas!</p>
+                <button class="gameover-btn" onclick="restartLevel()">🔄 REINTENTAR NIVEL</button>
+                <button class="gameover-btn" onclick="goToMenu()">🏠 IR AL MENÚ</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ==========================================
+        // ESTADO DEL JUEGO
+        // ==========================================
+        const gameState = {
+            currentLevel: 1,
+            lives: 3,
+            score: 0,
+            marioX: 0,
+            marioY: 0,
+            gameRunning: true,
+            coins: [],
+            enemies: [],
+            platforms: [],
+            gameOverFlag: false
+        };
+
+        // Teclas presionadas
+        const keys = {
+            left: false,
+            right: false,
+            jump: false
+        };
+
+        // Física del juego
+        const physics = {
+            gravity: 0.5,
+            marioVelocityX: 0,
+            marioVelocityY: 0,
+            marioSpeed: 5,
+            jumpPower: 12,
+            maxFallSpeed: 15,
+            isJumping: false,
+            isOnGround: false
+        };
+
+        // ==========================================
+        // PREGUNTAS POR NIVEL
+        // ==========================================
+        const levelQuestions = {
+            1: [
+                {
+                    question: "¿Cuál es la capital de Francia?",
+                    options: ["Londres", "París", "Berlín", "Madrid"],
+                    correct: 1
+                },
+                {
+                    question: "¿Cuántos continentes hay en el mundo?",
+                    options: ["5", "6", "7", "8"],
+                    correct: 2
+                }
+            ],
+            2: [
+                {
+                    question: "¿Cuál es el planeta más cercano al sol?",
+                    options: ["Venus", "Mercurio", "Tierra", "Marte"],
+                    correct: 1
+                },
+                {
+                    question: "¿En qué año terminó la Segunda Guerra Mundial?",
+                    options: ["1943", "1944", "1945", "1946"],
+                    correct: 2
+                }
+            ]
+        };
+
+        // ==========================================
+        // CONFIGURACIÓN DE NIVELES
+        // ==========================================
+        const levelConfig = {
+            1: {
+                name: "El Castillo de Peach",
+                goalX: 1150,
+                platforms: [
+                    { x: 0, y: 500, w: 200, h: 30 },
+                    { x: 250, y: 450, w: 180, h: 30 },
+                    { x: 500, y: 400, w: 180, h: 30 },
+                    { x: 750, y: 350, w: 180, h: 30 },
+                    { x: 1000, y: 300, w: 180, h: 30 },
+                    { x: 1100, y: 500, w: 150, h: 30 }
+                ],
+                enemies: [
+                    { x: 350, y: 420, dirX: 1 },
+                    { x: 650, y: 370, dirX: -1 }
+                ],
+                coins: [
+                    { x: 280, y: 400 },
+                    { x: 530, y: 350 },
+                    { x: 780, y: 300 },
+                    { x: 1030, y: 250 }
+                ]
+            },
+            2: {
+                name: "Fortaleza de Bowser",
+                goalX: 1150,
+                platforms: [
+                    { x: 0, y: 500, w: 150, h: 30 },
+                    { x: 200, y: 450, w: 140, h: 30 },
+                    { x: 100, y: 380, w: 120, h: 30 },
+                    { x: 400, y: 420, w: 140, h: 30 },
+                    { x: 300, y: 340, w: 130, h: 30 },
+                    { x: 650, y: 400, w: 150, h: 30 },
+                    { x: 550, y: 320, w: 140, h: 30 },
+                    { x: 900, y: 380, w: 150, h: 30 },
+                    { x: 800, y: 300, w: 140, h: 30 },
+                    { x: 1100, y: 480, w: 150, h: 30 }
+                ],
+                enemies: [
+                    { x: 250, y: 420, dirX: 1 },
+                    { x: 450, y: 390, dirX: -1 },
+                    { x: 700, y: 370, dirX: 1 },
+                    { x: 850, y: 350, dirX: -1 }
+                ],
+                coins: [
+                    { x: 220, y: 400 },
+                    { x: 350, y: 310 },
+                    { x: 600, y: 370 },
+                    { x: 750, y: 270 },
+                    { x: 920, y: 340 },
+                    { x: 1030, y: 440 }
+                ],
+                lava: [
+                    { x: 540, y: 470, w: 100, h: 60 }
+                ]
+            }
+        };
+
+        // ==========================================
+        // FUNCIONES DE PANTALLA
+        // ==========================================
+        function showInstructions() {
+            document.getElementById('menuScreen').style.display = 'none';
+            document.getElementById('instructionsScreen').style.display = 'flex';
+        }
+
+        function backToMenu() {
+            document.getElementById('instructionsScreen').style.display = 'none';
+            document.getElementById('menuScreen').style.display = 'flex';
+        }
+
+        function startGame() {
+            document.getElementById('menuScreen').style.display = 'none';
+            gameState.currentLevel = 1;
+            gameState.lives = 3;
+            gameState.score = 0;
+            loadLevel(1);
+        }
+
+        function goToMenu() {
+            document.getElementById('victoryScreen').style.display = 'none';
+            document.getElementById('gameoverScreen').style.display = 'none';
+            document.getElementById('menuScreen').style.display = 'flex';
+            document.getElementById('gameScreen').style.display = 'none';
+            document.getElementById('quizScreen').style.display = 'none';
+            gameState.gameRunning = false;
+        }
+
+        function restartLevel() {
+            document.getElementById('gameoverScreen').style.display = 'none';
+            document.getElementById('gameScreen').style.display = 'flex';
+            gameState.lives = 3;
+            loadLevel(gameState.currentLevel);
+        }
+
+        // ==========================================
+        // CARGAR NIVEL
+        // ==========================================
+        function loadLevel(levelNum) {
+            gameState.currentLevel = levelNum;
+            gameState.gameRunning = true;
+            gameState.gameOverFlag = false;
+
+            const config = levelConfig[levelNum];
+            const gameWorld = document.getElementById('gameWorld');
+            gameWorld.innerHTML = '';
+
+            // Crear plataformas
+            gameState.platforms = config.platforms;
+            config.platforms.forEach(p => {
+                const platform = document.createElement('div');
+                platform.className = 'platform';
+                platform.style.left = p.x + 'px';
+                platform.style.top = p.y + 'px';
+                platform.style.width = p.w + 'px';
+                platform.style.height = p.h + 'px';
+                gameWorld.appendChild(platform);
+            });
+
+            // Crear lava si existe
+            if (config.lava) {
+                config.lava.forEach(l => {
+                    const lava = document.createElement('div');
+                    lava.className = 'lava';
+                    lava.style.left = l.x + 'px';
+                    lava.style.top = l.y + 'px';
+                    lava.style.width = l.w + 'px';
+                    lava.style.height = l.h + 'px';
+                    gameWorld.appendChild(lava);
+                });
+            }
+
+            // Crear enemigos
+            gameState.enemies = config.enemies.map(e => ({...e, element: null}));
+            gameState.enemies.forEach(e => {
+                const enemy = document.createElement('div');
+                enemy.className = 'enemy';
+                enemy.style.left = e.x + 'px';
+                enemy.style.top = e.y + 'px';
+                e.element = enemy;
+                gameWorld.appendChild(enemy);
+            });
+
+            // Crear monedas
+            gameState.coins = config.coins.map(c => ({...c, collected: false, element: null}));
+            gameState.coins.forEach(c => {
+                const coin = document.createElement('div');
+                coin.className = 'coin';
+                coin.style.left = c.x + 'px';
+                coin.style.top = c.y + 'px';
+                c.element = coin;
+                gameWorld.appendChild(coin);
+            });
+
+            // Crear Mario
+            gameState.marioX = 50;
+            gameState.marioY = 400;
+            physics.marioVelocityX = 0;
+            physics.marioVelocityY = 0;
+            physics.isJumping = false;
+            physics.isOnGround = false;
+
+            const mario = document.createElement('div');
+            mario.className = 'mario';
+            mario.id = 'mario';
+            mario.style.left = gameState.marioX + 'px';
+            mario.style.top = gameState.marioY + 'px';
+            gameWorld.appendChild(mario);
+
+            // Actualizar HUD
+            document.getElementById('level').textContent = levelNum;
+            document.getElementById('lives').textContent = gameState.lives;
+            document.getElementById('score').textContent = gameState.score;
+
+            document.getElementById('gameScreen').style.display = 'flex';
+
+            // Iniciar loop del juego
+            gameLoop();
+        }
+
+        // ==========================================
+        // GAME LOOP
+        // ==========================================
+        function gameLoop() {
+            if (!gameState.gameRunning) return;
+
+            // Movimiento horizontal
+            if (keys.left) {
+                physics.marioVelocityX = -physics.marioSpeed;
+            } else if (keys.right) {
+                physics.marioVelocityX = physics.marioSpeed;
+            } else {
+                physics.marioVelocityX = 0;
+            }
+
+            // Salto
+            if (keys.jump && physics.isOnGround) {
+                physics.marioVelocityY = -physics.jumpPower;
+                physics.isJumping = true;
+                physics.isOnGround = false;
+            }
+
+            // Aplicar gravedad
+            physics.marioVelocityY += physics.gravity;
+            if (physics.marioVelocityY > physics.maxFallSpeed) {
+                physics.marioVelocityY = physics.maxFallSpeed;
+            }
+
+            // Actualizar posición
+            gameState.marioX += physics.marioVelocityX;
+            gameState.marioY += physics.marioVelocityY;
+
+            // Límites del mundo
+            if (gameState.marioX < 0) gameState.marioX = 0;
+            if (gameState.marioX > window.innerWidth - 32) gameState.marioX = window.innerWidth - 32;
+            if (gameState.marioY > window.innerHeight) {
+                loseLive();
+                return;
+            }
+
+            // Colisiones con plataformas
+            physics.isOnGround = false;
+            gameState.platforms.forEach(p => {
+                if (gameState.marioX + 32 > p.x &&
+                    gameState.marioX < p.x + p.w &&
+                    gameState.marioY + 40 >= p.y &&
+                    gameState.marioY + 40 <= p.y + p.h + 5 &&
+                    physics.marioVelocityY >= 0) {
+                    gameState.marioY = p.y - 40;
+                    physics.marioVelocityY = 0;
+                    physics.isOnGround = true;
+                    physics.isJumping = false;
+                }
+            });
+
+            // Colisiones con lava
+            const config = levelConfig[gameState.currentLevel];
+            if (config.lava) {
+                config.lava.forEach(l => {
+                    if (gameState.marioX + 32 > l.x &&
+                        gameState.marioX < l.x + l.w &&
+                        gameState.marioY + 40 > l.y &&
+                        gameState.marioY < l.y + l.h) {
+                        loseLive();
+                        return;
+                    }
+                });
+            }
+
+            // Colisiones con enemigos
+            gameState.enemies.forEach(e => {
+                if (gameState.marioX + 32 > e.x &&
+                    gameState.marioX < e.x + 32 &&
+                    gameState.marioY + 40 > e.y &&
+                    gameState.marioY < e.y + 26) {
+                    loseLive();
+                }
+            });
+
+            // Recoger monedas
+            gameState.coins.forEach(c => {
+                if (!c.collected &&
+                    gameState.marioX + 32 > c.x &&
+                    gameState.marioX < c.x + 16 &&
+                    gameState.marioY + 40 > c.y &&
+                    gameState.marioY < c.y + 16) {
+                    c.collected = true;
+                    c.element.classList.add('collected');
+                    gameState.score += 10;
+                    document.getElementById('score').textContent = gameState.score;
+                    setTimeout(() => {
+                        c.element.remove();
+                    }, 300);
+                }
+            });
+
+            // Verificar si llegó al final
+            if (gameState.marioX + 32 >= config.goalX) {
+                gameState.gameRunning = false;
+                startQuiz();
+                return;
+            }
+
+            // Mover enemigos
+            gameState.enemies.forEach(e => {
+                e.x += e.dirX * 2;
+                if (e.x < 0 || e.x > window.innerWidth - 32) {
+                    e.dirX *= -1;
+                }
+                e.element.style.left = e.x + 'px';
+            });
+
+            // Actualizar posición de Mario
+            const mario = document.getElementById('mario');
+            mario.style.left = gameState.marioX + 'px';
+            mario.style.top = gameState.marioY + 'px';
+
+            keys.jump = false;
+            requestAnimationFrame(gameLoop);
+        }
+
+        // ==========================================
+        // PERDER VIDA
+        // ==========================================
+        function loseLive() {
+            gameState.gameRunning = false;
+            gameState.lives--;
+
+            if (gameState.lives <= 0) {
+                document.getElementById('gameScreen').style.display = 'none';
+                document.getElementById('gameoverScreen').style.display = 'flex';
+                gameState.gameOverFlag = true;
+            } else {
+                document.getElementById('lives').textContent = gameState.lives;
+                setTimeout(() => {
+                    loadLevel(gameState.currentLevel);
+                }, 1000);
+            }
+        }
+
+        // ==========================================
+        // SISTEMA DE QUIZ
+        // ==========================================
+        let quizState = {
+            currentQuestion: 0,
+            answers: 0,
+            levelQuestions: []
+        };
+
+        function startQuiz() {
+            quizState.currentQuestion = 0;
+            quizState.answers = 0;
+            quizState.levelQuestions = levelQuestions[gameState.currentLevel];
+
+            document.getElementById('gameScreen').style.display = 'none';
+            document.getElementById('quizScreen').style.display = 'flex';
+            document.getElementById('quizLevel').textContent = `Nivel ${gameState.currentLevel}`;
+
+            showQuizQuestion();
+        }
+
+        function showQuizQuestion() {
+            const q = quizState.levelQuestions[quizState.currentQuestion];
+            document.getElementById('quizQuestion').textContent = q.question;
+            document.getElementById('quizProgress').textContent =
+                `Pregunta ${quizState.currentQuestion + 1} de ${quizState.levelQuestions.length}`;
+
+            const optionsContainer = document.getElementById('quizOptions');
+            optionsContainer.innerHTML = '';
+
+            q.options.forEach((option, index) => {
+                const btn = document.createElement('button');
+                btn.className = 'quiz-option';
+                btn.textContent = option;
+                btn.onclick = () => answerQuiz(index, q.correct);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function answerQuiz(selectedIndex, correctIndex) {
+            const buttons = document.querySelectorAll('.quiz-option');
+            buttons.forEach((btn, index) => {
+                btn.disabled = true;
+                btn.classList.add('disabled');
+                if (index === correctIndex) {
+                    btn.classList.add('correct');
+                } else if (index === selectedIndex && index !== correctIndex) {
+                    btn.classList.add('incorrect');
+                }
+            });
+
+            setTimeout(() => {
+                if (selectedIndex === correctIndex) {
+                    quizState.answers++;
+                }
+
+                quizState.currentQuestion++;
+
+                if (quizState.currentQuestion < quizState.levelQuestions.length) {
+                    showQuizQuestion();
+                } else {
+                    endQuiz();
+                }
+            }, 1500);
+        }
+
+        function endQuiz() {
+            if (quizState.answers === quizState.levelQuestions.length) {
+                // Quiz aprobado
+                if (gameState.currentLevel < 2) {
+                    gameState.currentLevel++;
+                    document.getElementById('quizScreen').style.display = 'none';
+                    loadLevel(gameState.currentLevel);
+                } else {
+                    // ¡Victoria!
+                    document.getElementById('quizScreen').style.display = 'none';
+                    document.getElementById('victoryScreen').style.display = 'flex';
+                }
+            } else {
+                // Quiz desaprobado
+                gameState.lives--;
+
+                if (gameState.lives <= 0) {
+                    document.getElementById('quizScreen').style.display = 'none';
+                    document.getElementById('gameoverScreen').style.display = 'flex';
+                } else {
+                    document.getElementById('quizScreen').style.display = 'none';
+                    document.getElementById('lives').textContent = gameState.lives;
+                    setTimeout(() => {
+                        document.getElementById('gameScreen').style.display = 'flex';
+                        loadLevel(gameState.currentLevel);
+                    }, 1000);
+                }
+            }
+        }
+
+        // ==========================================
+        // EVENTOS DE TECLADO
+        // ==========================================
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+                keys.left = true;
+                e.preventDefault();
+            }
+            if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+                keys.right = true;
+                e.preventDefault();
+            }
+            if (e.key === 'ArrowUp' || e.key === ' ') {
+                keys.jump = true;
+                e.preventDefault();
+            }
+        });
+
+        document.addEventListener('keyup', (e) => {
+            if (e.key === 'ArrowLeft' || e.key === 'a' || e.key === 'A') {
+                keys.left = false;
+            }
+            if (e.key === 'ArrowRight' || e.key === 'd' || e.key === 'D') {
+                keys.right = false;
+            }
+        });
+    </script>
+</body>
+</html>
