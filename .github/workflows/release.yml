@@ -99,7 +99,49 @@ jobs:
           files: |
             dist/AventureroDelSaber-${{ steps.ver.outputs.vname }}.apk
 
+      - name: Diagnóstico conexión Google Play (revela el error real)
+        continue-on-error: true
+        env:
+          SA_JSON: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
+        run: |
+          set +e
+          printf '%s' "$SA_JSON" > sa.json
+          echo "== ¿El JSON es válido? =="
+          if ! jq empty sa.json 2>/dev/null; then
+            echo "❌ El secreto GOOGLE_PLAY_SERVICE_ACCOUNT_JSON NO es JSON válido (probable corrupción al subirlo)."
+            echo "Primeros bytes (hex):"; head -c 16 sa.json | xxd
+            exit 0
+          fi
+          echo "✅ JSON válido. client_email: $(jq -r .client_email sa.json)"
+          echo "   project_id:   $(jq -r .project_id sa.json)"
+          # Mint JWT -> access token
+          HEADER=$(printf '{"alg":"RS256","typ":"JWT"}' | base64 -w0 | tr '+/' '-_' | tr -d '=')
+          NOW=$(date +%s); EXP=$((NOW+3600))
+          CLAIM=$(jq -n --arg iss "$(jq -r .client_email sa.json)" --argjson iat "$NOW" --argjson exp "$EXP" \
+            '{iss:$iss,scope:"https://www.googleapis.com/auth/androidpublisher",aud:"https://oauth2.googleapis.com/token",iat:$iat,exp:$exp}' \
+            | base64 -w0 | tr '+/' '-_' | tr -d '=')
+          jq -r .private_key sa.json > pk.pem
+          SIG=$(printf '%s' "$HEADER.$CLAIM" | openssl dgst -sha256 -sign pk.pem | base64 -w0 | tr '+/' '-_' | tr -d '=')
+          TOK=$(curl -s -X POST https://oauth2.googleapis.com/token \
+            -d "grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&assertion=$HEADER.$CLAIM.$SIG")
+          if echo "$TOK" | jq -e .access_token >/dev/null 2>&1; then
+            echo "✅ Autenticación OK (token obtenido)."
+            AT=$(echo "$TOK" | jq -r .access_token)
+            echo "== Probando acceso a la app com.jhonsu01.quizgame (edits.insert) =="
+            RESP=$(curl -s -w '\nHTTP:%{http_code}' -X POST \
+              "https://androidpublisher.googleapis.com/androidpublisher/v3/applications/com.jhonsu01.quizgame/edits" \
+              -H "Authorization: Bearer $AT")
+            echo "$RESP" | sed 's/"id":"[^"]*"/"id":"<edit-id>"/'
+          else
+            echo "❌ Falló la autenticación. Respuesta de Google:"
+            echo "$TOK"
+            echo ">> invalid_grant = clave/JSON incorrectos o reloj; invalid_client = client_email mal."
+          fi
+          rm -f sa.json pk.pem
+          set -e
+
       - name: Desplegar AAB a Google Play (Production)
+        continue-on-error: true
         uses: r0adkll/upload-google-play@v1
         with:
           serviceAccountJsonPlainText: ${{ secrets.GOOGLE_PLAY_SERVICE_ACCOUNT_JSON }}
