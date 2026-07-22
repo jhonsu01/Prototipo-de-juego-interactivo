@@ -1,0 +1,44 @@
+# ==== Build / Gradle ====
+*.apk
+*.aab
+.gradle/
+build/
+app/build/
+captures/
+.cxx/
+
+# ==== IDE ====
+.idea/
+*.iml
+.DS_Store
+Thumbs.db
+
+# ==== Config local (rutas del SDK, etc.) ====
+local.properties
+
+# ==== SECRETOS DE FIRMA (NUNCA SUBIR) ====
+keystore.properties
+*.jks
+*.keystore
+*.p12
+*.pepk
+
+# ==== SECRETOS DE GOOGLE PLAY / OAUTH (NUNCA SUBIR) ====
+*service-account*.json
+*service_account*.json
+play-service-account.json
+credentials.json
+token.json
+google-services.json
+*.p8
+
+# ==== Entorno / temporales ====
+.env
+.env.*
+.tmp/
+*.log
+
+# ==== Sistema agentico local (no forma parte del juego) ====
+.claude/
+memory/
+

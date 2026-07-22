@@ -1,0 +1,64 @@
+plugins {
+    id "com.android.application"
+}
+
+// Cargar propiedades de la clave desde un archivo seguro
+def keystorePropertiesFile = rootProject.file("keystore.properties")
+def keystoreProperties = new Properties()
+if (keystorePropertiesFile.exists()) {
+    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+}
+
+android {
+    namespace "com.jhonsu01.quizgame"
+    compileSdk 36
+
+    // Configuración para la firma de la aplicación
+    signingConfigs {
+        release {
+            if (keystorePropertiesFile.exists()) {
+                // Firma local usando keystore.properties (NO se sube al repo)
+                storeFile rootProject.file(keystoreProperties['storeFile'])
+                storePassword keystoreProperties['storePassword']
+                keyAlias keystoreProperties['keyAlias']
+                keyPassword keystoreProperties['keyPassword']
+            } else if (System.getenv('KEYSTORE_FILE') != null) {
+                // Firma en CI (GitHub Actions) usando variables de entorno / secretos
+                storeFile file(System.getenv('KEYSTORE_FILE'))
+                storePassword System.getenv('KEYSTORE_PASSWORD')
+                keyAlias System.getenv('KEY_ALIAS')
+                keyPassword System.getenv('KEY_PASSWORD')
+            }
+        }
+    }
+
+    defaultConfig {
+        applicationId "com.jhonsu01.quizgame"
+        minSdk 21
+        targetSdk 36
+        // versionCode/versionName se pueden sobreescribir desde CI:
+        //   ./gradlew ... -PvCode=4 -PvName=1.0.3
+        // Play Store ya publico versionCode 3 (1.0.2-stable); el siguiente debe ser >= 4.
+        versionCode (project.hasProperty('vCode') ? project.property('vCode').toString().toInteger() : 3)
+        versionName (project.hasProperty('vName') ? project.property('vName').toString() : "1.0.2-stable")
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro"
+            signingConfig signingConfigs.release
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+}
+
+dependencies {
+    implementation "androidx.appcompat:appcompat:1.6.1"
+    implementation "androidx.constraintlayout:constraintlayout:2.1.4"
+    implementation "com.google.android.material:material:1.11.0"
+}

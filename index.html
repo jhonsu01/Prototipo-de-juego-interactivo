@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aventurero del Saber — Descarga</title>
+<style>
+  :root { --bg:#0f1226; --card:#1a1f3d; --accent:#5b8cff; --accent2:#7c5cff; --text:#eef1ff; --muted:#9aa3c7; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif; background:radial-gradient(1200px 600px at 50% -10%,#26306b,var(--bg)); color:var(--text); min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px; }
+  .card { background:var(--card); border:1px solid #2b336a; border-radius:20px; max-width:520px; width:100%; padding:36px; box-shadow:0 20px 60px rgba(0,0,0,.4); text-align:center; }
+  .logo { font-size:56px; }
+  h1 { font-size:28px; margin:12px 0 4px; }
+  .pkg { color:var(--muted); font-size:13px; margin-bottom:20px; font-family:ui-monospace,monospace; }
+  .badge { display:inline-block; background:#243056; color:var(--accent); padding:6px 14px; border-radius:999px; font-size:14px; font-weight:600; margin-bottom:24px; }
+  .btn { display:block; width:100%; padding:16px; border:none; border-radius:14px; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff; font-size:17px; font-weight:700; text-decoration:none; cursor:pointer; transition:transform .1s; }
+  .btn:active { transform:scale(.98); }
+  .meta { color:var(--muted); font-size:13px; margin-top:16px; line-height:1.7; }
+  .meta a { color:var(--accent); }
+  .notes { text-align:left; background:#141838; border-radius:12px; padding:16px; margin-top:20px; font-size:13px; color:var(--muted); max-height:180px; overflow:auto; white-space:pre-wrap; }
+  .play { display:inline-flex; align-items:center; gap:8px; margin-top:18px; color:var(--muted); font-size:13px; text-decoration:none; }
+  .spin { color:var(--muted); }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="logo">🧠</div>
+    <h1>Aventurero del Saber</h1>
+    <div class="pkg">com.jhonsu01.quizgame</div>
+    <div id="badge" class="badge spin">Cargando última versión…</div>
+    <a id="download" class="btn" href="#" style="display:none">⬇️ Descargar APK</a>
+    <div id="meta" class="meta"></div>
+    <div id="notes" class="notes" style="display:none"></div>
+    <a class="play" href="https://play.google.com/store/apps/details?id=com.jhonsu01.quizgame" target="_blank" rel="noopener">▶ También disponible en Google Play</a>
+  </div>
+
+<script>
+const OWNER = "jhonsu01", REPO = "Prototipo-de-juego-interactivo";
+fetch(`https://api.github.com/repos/${OWNER}/${REPO}/releases/latest`)
+  .then(r => r.ok ? r.json() : Promise.reject(r.status))
+  .then(rel => {
+    const badge = document.getElementById("badge");
+    badge.classList.remove("spin");
+    badge.textContent = "Versión " + rel.tag_name;
+    const apk = (rel.assets || []).find(a => a.name.endsWith(".apk"));
+    const dl = document.getElementById("download");
+    if (apk) { dl.href = apk.browser_download_url; dl.style.display = "block"; dl.textContent = `⬇️ Descargar APK (${(apk.size/1048576).toFixed(1)} MB)`; }
+    const date = new Date(rel.published_at).toLocaleDateString("es-ES", {year:"numeric",month:"long",day:"numeric"});
+    document.getElementById("meta").innerHTML = `Publicado el ${date}<br><a href="${rel.html_url}" target="_blank" rel="noopener">Ver en GitHub Releases</a>`;
+    if (rel.body) { const n = document.getElementById("notes"); n.style.display="block"; n.textContent = rel.body; }
+  })
+  .catch(() => {
+    const badge = document.getElementById("badge");
+    badge.classList.remove("spin");
+    badge.textContent = "Aún no hay releases publicadas";
+    document.getElementById("meta").innerHTML =
+      `<a href="https://github.com/${OWNER}/${REPO}/releases" target="_blank" rel="noopener">Ver el repositorio</a>`;
+  });
+</script>
+</body>
+</html>
