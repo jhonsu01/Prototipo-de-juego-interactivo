@@ -35,12 +35,15 @@
         
         /* ==========================================
            MUNDO DEL JUEGO (70% superior de la pantalla)
-           Cielo degradado de azul a verde (césped)
+           Imagen de fondo personalizada
            ========================================== */
         .game-world {
             width: 100%;
             height: 70%;
-            background: linear-gradient(to bottom, #87CEEB 0%, #98FB98 40%, #228B22 100%);
+            background-image: url('fondo.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
             position: relative;
             overflow: hidden;
         }
@@ -164,74 +167,46 @@
             position: absolute;
             bottom: 25%; /* Posicionado sobre el camino */
             left: 50px; /* Posición inicial en el lado izquierdo */
-            width: 40px;
-            height: 60px;
+            width: 80px;
+            height: 80px;
             transition: left 2s ease; /* Animación suave al moverse (controlada por JS) */
             z-index: 10; /* Asegura que esté sobre otros elementos */
         }
-        
-        /* Cuerpo del personaje - forma básica con color dorado */
+
+        /* Cuerpo del personaje - ahora usa imagen PNG */
         .character-sprite {
             width: 100%;
             height: 100%;
-            background: #FFD700; /* Dorado para armadura */
-            border-radius: 20px 20px 10px 10px;
+            background-image: url('personaje.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
             position: relative;
             animation: bob 1.5s ease-in-out infinite; /* Animación de rebote constante */
         }
-        
+
         /* Cabeza del personaje (usando pseudo-elemento ::before) */
         .character-sprite::before {
             content: '';
-            position: absolute;
-            top: 5px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 25px;
-            height: 25px;
-            background: #FFDBAC; /* Color piel */
-            border-radius: 50%; /* Círculo para la cabeza */
-            border: 2px solid #DEB887;
+            display: none;
         }
-        
+
         /* Espada del personaje (usando emoji) */
         .character-sprite::after {
-            content: '⚔️';
-            position: absolute;
-            top: 30px;
-            right: -15px;
-            font-size: 20px;
-            transform: rotate(45deg);
+            content: '';
+            display: none;
         }
-        
+
         /* Ojos del personaje */
         .eyes {
-            position: absolute;
-            top: 12px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 15px;
-            height: 6px;
+            display: none;
         }
-        
+
         /* Dos puntos negros para los ojos */
         .eyes::before, .eyes::after {
-            content: '';
-            position: absolute;
-            width: 4px;
-            height: 4px;
-            background: black;
-            border-radius: 50%;
+            display: none;
         }
-        
-        .eyes::before {
-            left: 2px;
-        }
-        
-        .eyes::after {
-            right: 2px;
-        }
-        
+
         /* Animación de rebote del personaje */
         @keyframes bob {
             0%, 100% { transform: translateY(0px); }
@@ -249,27 +224,25 @@
             display: flex;
             gap: 30px; /* Espacio entre monstruos */
         }
-        
+
         /* Estilo individual de cada monstruo */
         .monster {
-            width: 35px;
-            height: 35px;
-            background: #8B0000; /* Rojo oscuro */
-            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%; /* Forma ovalada */
+            width: 80px;
+            height: 80px;
+            background-image: url('villano.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
             position: relative;
             animation: wiggle 2s ease-in-out infinite; /* Movimiento de meneo */
         }
-        
+
         /* Emoji de monstruo */
         .monster::before {
-            content: '👹';
-            position: absolute;
-            top: -5px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 25px;
+            content: '';
+            display: none;
         }
-        
+
         /* Animación de meneo para dar vida a los monstruos */
         @keyframes wiggle {
             0%, 100% { transform: rotate(-3deg); }
